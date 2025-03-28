@@ -8,7 +8,7 @@ function App() {
       <header className="App-header">
       <div>
       <h1>Batch Cooking - Recette</h1>
-      <Recipe />  {/* 🔹 Affichage du composant */}
+      <Recipe />  
     </div>      
       </header>
     </div>

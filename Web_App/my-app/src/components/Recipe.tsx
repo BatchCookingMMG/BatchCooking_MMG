@@ -7,6 +7,7 @@ interface RecetteType {
   nom: string;
   ingredients: string[];
   instructions: string;
+  imageUrl: string; // Ajout d'une image pour chaque recette
 }
 
 const Recipe: React.FC = () => {
@@ -15,13 +16,17 @@ const Recipe: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/recette/1") // 🔹 Mets l'URL de ton backend
+    axios.get("https://run.mocky.io/v3/488cfcea-20e6-4b04-9b59-3d51bcd35610")
       .then(response => {
-        setRecette(response.data);
+        const recetteTrouvee = response.data.find((recette: RecetteType) => recette.id === 1);
+        if (recetteTrouvee) {
+          setRecette(recetteTrouvee);
+        } else {
+          setError("Recette introuvable.");
+        }
         setLoading(false);
       })
       .catch(error => {
-        console.error("Erreur lors de la récupération de la recette:", error);
         setError("Impossible de récupérer la recette");
         setLoading(false);
       });
@@ -32,16 +37,19 @@ const Recipe: React.FC = () => {
   if (!recette) return <p>Aucune recette trouvée.</p>;
 
   return (
-    <div>
-      <h2>{recette.nom}</h2>
-      <h3>Ingrédients :</h3>
-      <ul>
-        {recette.ingredients.map((ingredient, index) => (
-          <li key={index}>{ingredient}</li>
-        ))}
-      </ul>
-      <h3>Instructions :</h3>
-      <p>{recette.instructions}</p>
+    <div className="recipe-card">
+      <img src={recette.imageUrl} alt={recette.nom} className="recipe-image" />
+      <div className="recipe-content">
+        <h2>{recette.nom}</h2>
+        <h3>Ingrédients :</h3>
+        <ul>
+          {recette.ingredients.map((ingredient, index) => (
+            <li key={index} className="ingredient-item">{ingredient}</li>
+          ))}
+        </ul>
+        <h3>Instructions :</h3>
+        <p>{recette.instructions}</p>
+      </div>
     </div>
   );
 };
