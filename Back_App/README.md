@@ -26,7 +26,7 @@ Configurer `application.properties` :
 - MongoDB
 
 Port de l'API
-SERVER_PORT=8081
+SERVER_PORT=8083
 
 ### 3️⃣ Lancer l’application en mode développement
 mvn spring-boot:run
