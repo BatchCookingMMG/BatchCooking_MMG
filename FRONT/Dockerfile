@@ -5,13 +5,13 @@ FROM node:22.14.0-alpine
 WORKDIR /app
 
 # Copier les fichiers package.json et package-lock.json (pour installer les dépendances)
-COPY ./WEB_APP/package*.json ./
+COPY ./FRONT/package*.json ./
 
 # Installer les dépendances
 RUN npm install
 
 # Copier tout le code source
-COPY ./WEB_APP/ ./
+COPY ./FRONT/ ./
 
 # Construire l'application React
 RUN npm run build
