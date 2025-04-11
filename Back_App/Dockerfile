@@ -10,8 +10,8 @@ WORKDIR /app
 # Copier le fichier JAR généré par Maven/Gradle dans le conteneur
 COPY target/*.jar app.jar
 
-# Exposer le port sur lequel Spring Boot tourne (exemple : 8080)
-EXPOSE 8081
+# Exposer le port sur lequel Spring Boot tourne
+EXPOSE 8083
 
 # Définir la commande de démarrage de l'application
 ENTRYPOINT ["java", "-jar", "app.jar"]
