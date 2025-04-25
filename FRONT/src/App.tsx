@@ -1,26 +1,11 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import RandomRecipe from './RandomRecipe'; // Assure-toi d'importer le bon chemin
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Recette aléatoire</h1>
+      <RandomRecipe />
     </div>
   );
 }
-
 export default App;
