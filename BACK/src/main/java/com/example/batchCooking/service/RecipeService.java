@@ -1,9 +1,11 @@
 package com.example.batchCooking.service;
 
+import aj.org.objectweb.asm.commons.Remapper;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RecipeService {
@@ -16,5 +18,9 @@ public class RecipeService {
 
     public List<Recipe> getRandomNRecipes(int n) {
         return recipeRepository.findRandomRecipes(n);
+    }
+
+    public Optional<Recipe> getRecipeById(String id) {
+        return recipeRepository.findById(id);
     }
 }
