@@ -1,7 +1,8 @@
 services:
   front:
     build:
-      context: ./front # Chemin relatif vers le dossier contenant le Dockerfile du front
+      context: ./FRONT # Chemin relatif vers le dossier contenant le Dockerfile du front
+      dockerfile: Dockerfile
     ports:
       - "3000:80" # Mappe le port 80 du conteneur sur le port 3000 de ta machine
     depends_on:
@@ -17,3 +18,6 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev # Exemple de variable d'environnement pour Spring Boot
     # Ajoute d'autres configurations spécifiques au back-end, comme les bases de données, etc.
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
