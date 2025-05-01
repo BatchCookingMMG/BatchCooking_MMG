@@ -14,5 +14,5 @@ public interface RecipeRepository extends MongoRepository<Recipe, String> {
     @Aggregation(pipeline = { "{ $sample: { size: ?0 } }" })
     List<Recipe> findRandomRecipes(int n);
 
-    Optional<Recipe> findById(String id);
+    Optional<Recipe> findById(Integer id);
 }

@@ -20,7 +20,7 @@ public class RecipeService {
         return recipeRepository.findRandomRecipes(n);
     }
 
-    public Optional<Recipe> getRecipeById(String id) {
+    public Optional<Recipe> getRecipeById(Integer id) {
         return recipeRepository.findById(id);
     }
 }

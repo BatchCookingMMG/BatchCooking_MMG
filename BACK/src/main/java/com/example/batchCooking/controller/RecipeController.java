@@ -17,7 +17,7 @@ public class RecipeController {
 
     // Récupérer une recette par son ID
     @GetMapping("/id/{id}")
-    public ResponseEntity<Recipe> getRecipeById(@PathVariable String id) {
+    public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer id) {
         return recipeService.getRecipeById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());

@@ -8,22 +8,22 @@ import java.util.List;
 @Document(collection = "Recipes") // Collection MongoDB
 public class Recipe {
     @Id
-    private String id;
+    private Integer id;
     private String tag;
     private String title;
-    private String preparationTime;
+    private String preparation_time;
     private String difficulty;
     private String cost;
-    private int peopleNumber;
+    private int people_number;
     private List<Ingredient> ingredients;
     private List<Step> steps;
 
     // Getters et Setters
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,12 +43,12 @@ public class Recipe {
         this.title = title;
     }
 
-    public String getPreparationTime() {
-        return preparationTime;
+    public String getPreparation_time() {
+        return preparation_time;
     }
 
-    public void setPreparationTime(String preparationTime) {
-        this.preparationTime = preparationTime;
+    public void setPreparation_time(String preparation_time) {
+        this.preparation_time = preparation_time;
     }
 
     public String getDifficulty() {
@@ -67,12 +67,12 @@ public class Recipe {
         this.cost = cost;
     }
 
-    public int getPeopleNumber() {
-        return peopleNumber;
+    public int getPeople_number() {
+        return people_number;
     }
 
-    public void setPeopleNumber(int peopleNumber) {
-        this.peopleNumber = peopleNumber;
+    public void setPeople_number(int people_number) {
+        this.people_number = people_number;
     }
 
     public List<Ingredient> getIngredients() {
