@@ -1,19 +1,27 @@
 services:
-  front:
-    build:
-      context: ./front # Chemin relatif vers le dossier contenant le Dockerfile du front
-    ports:
-      - "3000:80" # Mappe le port 80 du conteneur sur le port 3000 de ta machine
-    depends_on:
-      - back # S'assurer que le back est prêt avant de lancer le front
-    environment:
-      - REACT_APP_API_URL=http://back:8083
-
   back:
     build:
-      context: ./back # Chemin relatif vers le dossier contenant le Dockerfile du back
+      context: ./BACK
     ports:
-      - "8083:8083" # Mappe le port 8081 du conteneur sur le port 8081 de ta machine
+      - "8083:8083"
+    networks:
+      - batchcooking_network
+    #environment:
+     # - JWT_SECRET=${JWT_SECRET}
+      #- JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
+
+  front:
+    build:
+      context: ./FRONT
+    ports:
+      - "3000:80"
+    networks:
+      - batchcooking_network
+    depends_on:
+      - back
     environment:
-      SPRING_PROFILES_ACTIVE: dev # Exemple de variable d'environnement pour Spring Boot
-    # Ajoute d'autres configurations spécifiques au back-end, comme les bases de données, etc.
+      - REACT_APP_API_URL=http://host.docker.internal:8083
+
+networks:
+  batchcooking_network:
+    driver: bridge
