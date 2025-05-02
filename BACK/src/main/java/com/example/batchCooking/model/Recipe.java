@@ -14,7 +14,7 @@ public class Recipe {
     private String preparation_time;
     private String difficulty;
     private String cost;
-    private int people_number;
+    private Integer people_number;
     private List<Ingredient> ingredients;
     private List<Step> steps;
 
@@ -67,11 +67,11 @@ public class Recipe {
         this.cost = cost;
     }
 
-    public int getPeople_number() {
+    public Integer getPeople_number() {
         return people_number;
     }
 
-    public void setPeople_number(int people_number) {
+    public void setPeople_number(Integer people_number) {
         this.people_number = people_number;
     }
 

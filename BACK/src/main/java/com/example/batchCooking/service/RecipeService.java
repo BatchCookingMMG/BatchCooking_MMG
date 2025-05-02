@@ -16,7 +16,7 @@ public class RecipeService {
         this.recipeRepository = recipeRepository;
     }
 
-    public List<Recipe> getRandomNRecipes(int n) {
+    public List<Recipe> getRandomNRecipes(Integer n) {
         return recipeRepository.findRandomRecipes(n);
     }
 

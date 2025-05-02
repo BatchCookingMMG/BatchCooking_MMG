@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface RecipeRepository extends MongoRepository<Recipe, String> {
     @Aggregation(pipeline = { "{ $sample: { size: ?0 } }" })
-    List<Recipe> findRandomRecipes(int n);
+    List<Recipe> findRandomRecipes(Integer n);
 
     Optional<Recipe> findById(Integer id);
 }
