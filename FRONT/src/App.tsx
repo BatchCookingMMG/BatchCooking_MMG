@@ -1,25 +1,24 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import './App.css';
+import RandomRecipe from './RandomRecipe';
+import RecipeDetail from './RecipeDetail';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <h1>Recettes</h1>
+        <Routes>
+          {/* Route par défaut : liste aléatoire */}
+          <Route path="/" element={<RandomRecipe />} />
+
+          {/* Détail d'une recette par ID */}
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
