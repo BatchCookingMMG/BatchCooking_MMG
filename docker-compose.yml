@@ -1,12 +1,24 @@
 services:
+  back:
+    build:
+      context: ./BACK
+    ports:
+      - "8083:8083"
+    networks:
+      - batchcooking_network
+    #environment:
+     # - JWT_SECRET=${JWT_SECRET}
+      #- JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
+
   front:
     build:
-      context: ./FRONT # Chemin relatif vers le dossier contenant le Dockerfile du front
-      dockerfile: Dockerfile
+      context: ./FRONT
     ports:
-      - "3000:80" # Mappe le port 80 du conteneur sur le port 3000 de ta machine
+      - "3000:80"
+    networks:
+      - batchcooking_network
     depends_on:
-      - back # S'assurer que le back est prêt avant de lancer le front
+      - back
     environment:
       - REACT_APP_API_URL=http://back:8083
 

@@ -4,14 +4,14 @@ FROM node:22.14.0-alpine AS build
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier package.json et package-lock.json
-COPY package*.json ./
+# Copier les fichiers package.json et package-lock.json (pour installer les dépendances)
+COPY ./package*.json ./
 
 # Installer les dépendances
 RUN npm install
 
 # Copier tout le code source
-COPY . .
+COPY ./ ./
 
 # Construire l'application React
 RUN npm run build
