@@ -19,8 +19,6 @@ services:
       - batchcooking_network
     depends_on:
       - back
-    environment:
-      - REACT_APP_API_URL=http://host.docker.internal:8083
 
 networks:
   batchcooking_network:
