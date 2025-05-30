@@ -1,5 +1,5 @@
 # Utiliser la version spécifique de Node.js (22.14.0)
-FROM node:22.14.0-alpine
+FROM node:22.16.0-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app
