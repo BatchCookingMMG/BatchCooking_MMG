@@ -1,5 +1,5 @@
 # Utiliser la version spécifique de Node.js (22.14.0)
-FROM node:22.16.0-alpine
+FROM node:22.16.0-alpine AS build
 
 # Définir le répertoire de travail
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN npm run build
 
 # Utiliser Nginx pour servir l’application
 FROM nginx:alpine
-COPY --from=0 /app/build /usr/share/nginx/html
+COPY --from=0 /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exposer le port 80
