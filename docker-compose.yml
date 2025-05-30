@@ -14,7 +14,7 @@ services:
     build:
       context: ./FRONT
     ports:
-      - "3000:80"
+      - "5173:80"
     networks:
       - batchcooking_network
     depends_on:
