@@ -10,6 +10,18 @@ services:
      # - JWT_SECRET=${JWT_SECRET}
       #- JWT_EXPIRATION_MS=${JWT_EXPIRATION_MS}
 
+  batch:
+    build:
+      context: ./BATCH
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./BATCH/.env
+    networks:
+      - batchcooking_network
+    depends_on:
+      - back
+      
   front:
     build:
       context: ./FRONT

@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.log
+*.bak
+
+# Environment files
+.env
+.env.*
+
+# Byte-compiled files
+*.pyc
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Docker
+*.pid
+*.seed
+docker-compose.override.yml
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Pytest
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Pipenv
+Pipfile.lock
+
+# MyPy
+.mypy_cache/
+
+# Flask
+instance/
+*.db
