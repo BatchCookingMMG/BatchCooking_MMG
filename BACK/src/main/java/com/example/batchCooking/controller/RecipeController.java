@@ -24,8 +24,17 @@ public class RecipeController {
     }
 
     // Récupérer N recettes aléatoires
-    @GetMapping("/random/{count}")
-    public List<Recipe> getRandomRecipes(@PathVariable int count) {
-        return recipeService.getRandomNRecipes(count);
-    }
+      @GetMapping("/random/{count}")
+      public ResponseEntity<List<Recipe>> getRandomRecipes(@PathVariable int count) {
+          try {
+              List<Recipe> recipes = recipeService.getRandomNRecipes(count);
+              return ResponseEntity.ok(recipes);
+          } catch (IllegalArgumentException e) {
+              return ResponseEntity.badRequest().build(); // Renvoie un code 400
+          }
+      }
 }
+
+
+
+
