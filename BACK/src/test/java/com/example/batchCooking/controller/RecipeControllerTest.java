@@ -126,6 +126,4 @@ class RecipeControllerTest {
         mockMvc.perform(get("/api/recipes/random/-1"))
                 .andExpect(status().isBadRequest());
     }
-
-
 }
