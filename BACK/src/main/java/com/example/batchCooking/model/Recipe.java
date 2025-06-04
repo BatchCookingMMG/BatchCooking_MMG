@@ -90,4 +90,10 @@ public class Recipe {
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
+
+    public void setName(String recipeA) {
+    }
+
+    public void setDescription(String descriptionA) {
+    }
 }
