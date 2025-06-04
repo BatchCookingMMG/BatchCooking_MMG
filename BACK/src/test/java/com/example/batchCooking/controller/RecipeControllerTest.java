@@ -60,10 +60,10 @@ class RecipeControllerTest {
     @Test
     void testGetRecipeById_notFound() throws Exception {
         // given
-        when(recipeService.getRecipeById(9999)).thenReturn(Optional.empty());
+        when(recipeService.getRecipeById(0)).thenReturn(Optional.empty());
 
         // when + then
-        mockMvc.perform(get("/api/recipes/id/9999"))
+        mockMvc.perform(get("/api/recipes/id/0"))
                 .andExpect(status().isNotFound());
     }
 
