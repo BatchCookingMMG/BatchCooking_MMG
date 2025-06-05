@@ -1,9 +1,8 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-import './App.css';
-import RandomRecipe from './RandomRecipe';
-import RecipeDetail from './RecipeDetail';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import RandomRecipe from "./RandomRecipe";
+import RecipeDetail from "./RecipeDetail";
 
 function App() {
   return (
