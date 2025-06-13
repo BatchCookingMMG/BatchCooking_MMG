@@ -27,6 +27,8 @@ services:
       context: ./FRONT
     ports:
       - "5173:80"
+    env_file:
+      - ./FRONT/.env.production
     networks:
       - batchcooking_network
     depends_on:
