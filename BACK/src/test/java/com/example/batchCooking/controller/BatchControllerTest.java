@@ -46,7 +46,7 @@ class BatchControllerTest {
         // when + then
         mockMvc.perform(post("/api/batch/generate")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("[1,2]"))
+                        .content("{\"recipeIds\": [1, 2]}"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(mockResult));
     }

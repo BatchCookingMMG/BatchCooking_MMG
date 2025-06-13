@@ -4,11 +4,6 @@ from batch.BatchCookingProcessor import get_recipes_by_ids, group_steps_by_categ
 
 app = Flask(__name__)
 
-@app.route("/test")
-def test():
-    print("Test route")
-    return "Test OK"
-
 @app.route("/api/batch/generate", methods=["POST"])
 def generate_batch():
     try:

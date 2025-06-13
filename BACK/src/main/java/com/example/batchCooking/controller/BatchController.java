@@ -1,5 +1,6 @@
 package com.example.batchCooking.controller;
 
+import com.example.batchCooking.dto.RecipeRequestDTO;
 import com.example.batchCooking.service.BatchService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,9 @@ public class BatchController {
     }
 
     @PostMapping("/generate")
-    public ResponseEntity<String> generateBatch(@RequestBody List<Integer> recipeIds) {
+    public ResponseEntity<String> generateBatch(@RequestBody RecipeRequestDTO recipeRequestDTO) {
         try {
-            String result = batchService.generateBatch(recipeIds);
+            String result = batchService.generateBatch(recipeRequestDTO.getRecipeIds());
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Exception: " + e.getMessage());

@@ -80,14 +80,14 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> List[str]:
     )
 
     batch_plan = []
-    batch_plan.append("--- ÉTAPES MUTUALISÉES ---")
+    batch_plan.append("--- ÉTAPES MUTUALISÉES ---\n")
     for category in sorted_categories:
         batch_plan.append(f"--- {category.upper()} ---")
         batch_plan.extend(mutualized_steps_by_category[category])
 
     # Ajouter les étapes spécifiques à chaque recette
     for item in recipe_specific_steps:
-        batch_plan.append(f"\n--- RECETTE : {item['title']} ---")
+        batch_plan.append(f"\n--- RECETTE : {item['title']} ---\n")
         batch_plan.extend(item['steps'])
 
     return batch_plan
