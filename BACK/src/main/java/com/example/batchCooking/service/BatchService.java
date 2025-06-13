@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class BatchService {
@@ -20,11 +22,15 @@ public class BatchService {
 
 
     public String generateBatch(List<Integer> recipeIds) {
-        String batchServiceUrl = "http://batch-service:5001/api/batch/generate";
+        String batchServiceUrl = "http://batch:5001/api/batch/generate";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<Integer>> request = new HttpEntity<>(recipeIds, headers);
+
+        // Préparer un Map pour envoyer {"recipeIds": [...]}
+        Map<String, List<Integer>> requestBody = Collections.singletonMap("recipeIds", recipeIds);
+
+        HttpEntity<Map<String, List<Integer>>> request = new HttpEntity<>(requestBody, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(batchServiceUrl, request, String.class);
 
