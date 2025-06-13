@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
+
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
@@ -23,14 +26,21 @@ public class RecipeController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Récupérer N recettes aléatoires
-      @GetMapping("/random/{count}")
-      public ResponseEntity<List<Recipe>> getRandomRecipes(@PathVariable int count) {
+    // Récupérer N recettes aléatoires selon filtres vegetarien/porc
+      @GetMapping("/random")
+      public ResponseEntity<List<Recipe>> getRandomRecipes(
+              @RequestParam @Min(2) @Max(14) Integer recipesNumber,
+              @RequestParam(defaultValue = "false") boolean vegetarien,
+              @RequestParam(defaultValue = "false") boolean sansPorc) {
+
           try {
-              List<Recipe> recipes = recipeService.getRandomNRecipes(count);
+              List<Recipe> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc);
+              if (recipes.isEmpty()) {
+                  return ResponseEntity.noContent().build();
+              }
               return ResponseEntity.ok(recipes);
           } catch (IllegalArgumentException e) {
-              return ResponseEntity.badRequest().build(); // Renvoie un code 400
+              return ResponseEntity.badRequest().build();
           }
       }
 }
