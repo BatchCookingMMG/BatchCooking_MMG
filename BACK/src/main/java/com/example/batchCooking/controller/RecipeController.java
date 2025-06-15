@@ -1,4 +1,6 @@
 package com.example.batchCooking.controller;
+import com.example.batchCooking.model.CostEnum;
+import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.service.RecipeService;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +33,14 @@ public class RecipeController {
       public ResponseEntity<List<Recipe>> getRandomRecipes(
               @RequestParam @Min(2) @Max(14) Integer recipesNumber,
               @RequestParam(defaultValue = "false") boolean vegetarien,
-              @RequestParam(defaultValue = "false") boolean sansPorc) {
+              @RequestParam(defaultValue = "false") boolean sansPorc,
+              @RequestParam(required = false) String difficulty,
+              @RequestParam(required = false) String cost) {
 
           try {
-              List<Recipe> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc);
+              DifficultyEnum difficultyEnum = difficulty != null ? DifficultyEnum.fromLabel(difficulty) : null;
+              CostEnum costEnum = cost != null ? CostEnum.fromLabel(cost) : null;
+              List<Recipe> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
               if (recipes.isEmpty()) {
                   return ResponseEntity.noContent().build();
               }

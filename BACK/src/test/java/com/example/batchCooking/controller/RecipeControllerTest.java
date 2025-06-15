@@ -78,7 +78,7 @@ class RecipeControllerTest {
 
         List<Recipe> recipes = Arrays.asList(recipe1, recipe2);
 
-        when(recipeService.getRandomNRecipes(2, true, false)).thenReturn(recipes);
+        when(recipeService.getRandomNRecipes(2, true, false, null, null)).thenReturn(recipes);
 
         // when + then
         mockMvc.perform(get("/api/recipes/random")
@@ -103,7 +103,7 @@ class RecipeControllerTest {
     @Test
     public void testGetRandomRecipes_NoContent() throws Exception {
         // given
-        when(recipeService.getRandomNRecipes(2, true, false)).thenReturn(Collections.emptyList());
+        when(recipeService.getRandomNRecipes(2, true, false, null, null)).thenReturn(Collections.emptyList());
 
         // when + then
         mockMvc.perform(get("/api/recipes/random")
