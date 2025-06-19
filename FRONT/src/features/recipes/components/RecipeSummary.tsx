@@ -1,49 +1,60 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { RecipeSummaryType } from "@/features/recipes";
-import { fetchRecipeSummary } from "@/features/recipes";
+import { RecipeSummaryProps } from "@/features/recipes/types/recipeTypes";
 
-function RecipeSummary() {
-  const { id } = useParams();
-  console.log(id);
-  const [summary, setSummary] = useState<RecipeSummaryType | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-    const getSummary = async () => {
-      try {
-        const data = await fetchRecipeSummary(Number(id));
-        setSummary(data);
-      } catch (err) {
-        setError("Erreur lors de la récupération du résumé de la recette.");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSummary();
-  }, [id]);
-
-  if (loading) return <p>Chargement du résumé...</p>;
-  if (error) return <p>{error}</p>;
-  if (!summary) return <p>Aucun résumé trouvé.</p>;
-
+const RecipeSummary = ({
+  preparationTime,
+  difficulty,
+  peopleNumber,
+  cost,
+  tag,
+}: RecipeSummaryProps) => {
   return (
-    <div>
-      <p>
-        <strong>Temps de préparation :</strong> {summary.preparationTime}
-      </p>
-      <p>
-        <strong>Difficulté :</strong> {summary.difficulty}
-      </p>
-      <p>
-        <strong>Nombre de personnes :</strong> {summary.peopleNumber}
-      </p>
+    <div className="bg-[#edc59d] rounded-2xl p-6 text-sm text-gray-800 w-full max-w-md">
+      <div className="flex justify-between">
+        {/* Colonne gauche */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            {/* Exemple d'icône : tu peux utiliser react-icons ou un SVG ici */}
+            <span role="img" aria-label="personnes">
+              🍽️
+            </span>
+            <span className="font-semibold">Personnes</span>
+            <span className="ml-2">{peopleNumber}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span role="img" aria-label="difficulté">
+              ⚙️
+            </span>
+            <span className="font-semibold">Difficulté</span>
+            <span className="ml-2">{difficulty}</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span role="img" aria-label="temps">
+              ⏱️
+            </span>
+            <span className="font-semibold">Temps préparation</span>
+            <span className="ml-2">{preparationTime} minutes</span>
+          </div>
+        </div>
+
+        {/* Colonne droite */}
+        <div className="space-y-4 text-right">
+          <div>
+            <span className="font-semibold">Tag</span>
+            <br />
+            <span>{tag}</span>
+          </div>
+
+          <div>
+            <span className="font-semibold">Coût</span>
+            <br />
+            <span>{cost}</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default RecipeSummary;
