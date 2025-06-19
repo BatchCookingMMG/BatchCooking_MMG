@@ -42,7 +42,9 @@ public class RecipeController {
                 .map(recipe -> new RecipeSummaryDTO(
                         recipe.getPreparation_time(),
                         recipe.getDifficulty(),
-                        recipe.getPeople_number()
+                        recipe.getPeople_number(),
+                        recipe.getCost(),
+                        recipe.getTag()
                 ))
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
