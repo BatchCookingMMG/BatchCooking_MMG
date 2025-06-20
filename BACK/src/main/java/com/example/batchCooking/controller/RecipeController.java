@@ -1,4 +1,5 @@
 package com.example.batchCooking.controller;
+import com.example.batchCooking.dto.RecipeSummaryDTO;
 import com.example.batchCooking.model.CostEnum;
 import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
@@ -30,7 +31,7 @@ public class RecipeController {
 
     // Récupérer N recettes aléatoires selon filtres vegetarien/porc
       @GetMapping("/random")
-      public ResponseEntity<List<Recipe>> getRandomRecipes(
+      public ResponseEntity<List<RecipeSummaryDTO>> getRandomRecipes(
               @RequestParam @Min(2) @Max(14) Integer recipesNumber,
               @RequestParam(defaultValue = "false") boolean vegetarien,
               @RequestParam(defaultValue = "false") boolean sansPorc,
@@ -40,7 +41,7 @@ public class RecipeController {
           try {
               DifficultyEnum difficultyEnum = difficulty != null ? DifficultyEnum.fromLabel(difficulty) : null;
               CostEnum costEnum = cost != null ? CostEnum.fromLabel(cost) : null;
-              List<Recipe> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
+              List<RecipeSummaryDTO> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
               if (recipes.isEmpty()) {
                   return ResponseEntity.noContent().build();
               }

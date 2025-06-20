@@ -1,5 +1,6 @@
-package com.example.batchCooking.Service;
+package com.example.batchCooking.service;
 
+import com.example.batchCooking.dto.RecipeSummaryDTO;
 import com.example.batchCooking.model.CostEnum;
 import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
@@ -33,32 +34,38 @@ public class RecipeServiceTest {
 
     @Test
     void testGetRandomNRecipes_withAllFilters() {
-        Recipe recipe = new Recipe();
-        recipe.setTag("vegetarien");
-        recipe.setDifficulty("facile");
-        recipe.setCost("moyen");
+        // given
+        RecipeSummaryDTO dto = new RecipeSummaryDTO(
+                123, "vegetarien", "hachis parmentier", "30 min", "Facile"
+        );
 
         when(recipeRepositoryCustom.findFilteredRandomRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN))
-                .thenReturn(List.of(recipe));
+                .thenReturn(List.of(dto));
 
-        List<Recipe> result = recipeService.getRandomNRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN);
+        // when
+        List<RecipeSummaryDTO> result = recipeService.getRandomNRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN);
 
+        // then
         assertEquals(1, result.size());
+        assertEquals("hachis parmentier", result.get(0).getTitle());
         verify(recipeRepositoryCustom, times(1))
                 .findFilteredRandomRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN);
     }
 
     @Test
     void testGetRandomNRecipes_withNoFilters() {
-        Recipe recipe = new Recipe();
-        recipe.setTag("dessert");
+        // given
+        RecipeSummaryDTO dto = new RecipeSummaryDTO(
+                456, "dessert", "tarte aux pommes", "45 min", "Moyen"
+        );
 
         when(recipeRepositoryCustom.findFilteredRandomRecipes(2, false, false, null, null))
-                .thenReturn(List.of(recipe));
+                .thenReturn(List.of(dto));
 
-        List<Recipe> result = recipeService.getRandomNRecipes(2, false, false, null, null);
+        List<RecipeSummaryDTO> result = recipeService.getRandomNRecipes(2, false, false, null, null);
 
         assertEquals(1, result.size());
+        assertEquals("dessert", result.get(0).getTag());
         verify(recipeRepositoryCustom).findFilteredRandomRecipes(2, false, false, null, null);
     }
 

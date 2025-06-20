@@ -1,5 +1,6 @@
 package com.example.batchCooking.repository.impl;
 
+import com.example.batchCooking.dto.RecipeSummaryDTO;
 import com.example.batchCooking.model.CostEnum;
 import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
@@ -24,7 +25,7 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
     }
 
     @Override
-    public List<Recipe> findFilteredRandomRecipes(int size, boolean vegetarien, boolean sansPorc, DifficultyEnum difficulty, CostEnum cost) {
+    public List<RecipeSummaryDTO> findFilteredRandomRecipes(int size, boolean vegetarien, boolean sansPorc, DifficultyEnum difficulty, CostEnum cost) {
         List<Criteria> criteriaList = new ArrayList<>();
 
         if (vegetarien) {
@@ -47,11 +48,18 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
                 : Aggregation.match(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         SampleOperation sample = Aggregation.sample(size);
 
-        Aggregation aggregation = (match == null)
-                ? Aggregation.newAggregation(sample)
-                : Aggregation.newAggregation(match, sample);
+        ProjectionOperation project = Aggregation.project()
+                .andExpression("_id").as("id")
+                .and("tag").as("tag")
+                .and("title").as("title")
+                .and("preparation_time").as("preparation_time")
+                .and("difficulty").as("difficulty");
 
-        return mongoTemplate.aggregate(aggregation, "Recipes", Recipe.class).getMappedResults();
+        Aggregation aggregation = (match == null)
+                ? Aggregation.newAggregation(sample, project)
+                : Aggregation.newAggregation(match, sample, project);
+
+        return mongoTemplate.aggregate(aggregation, "Recipes", RecipeSummaryDTO.class).getMappedResults();
     }
 }
 

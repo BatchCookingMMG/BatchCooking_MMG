@@ -1,5 +1,6 @@
 package com.example.batchCooking.service;
 
+import com.example.batchCooking.dto.RecipeSummaryDTO;
 import com.example.batchCooking.model.CostEnum;
 import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
@@ -24,7 +25,7 @@ public class RecipeService {
         this.recipeRepositoryCustom = recipeRepositoryCustom;
     }
 
-    public List<Recipe> getRandomNRecipes(Integer recipesNumber, boolean vegetarien, boolean sansPorc, DifficultyEnum difficultyEnum, CostEnum costEnum) {
+    public List<RecipeSummaryDTO> getRandomNRecipes(Integer recipesNumber, boolean vegetarien, boolean sansPorc, DifficultyEnum difficultyEnum, CostEnum costEnum) {
         return recipeRepositoryCustom.findFilteredRandomRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
     }
 
