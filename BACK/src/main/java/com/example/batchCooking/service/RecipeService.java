@@ -1,7 +1,12 @@
 package com.example.batchCooking.service;
 
+import com.example.batchCooking.dto.RecipeSummaryDTO;
+import com.example.batchCooking.model.CostEnum;
+import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.repository.RecipeRepository;
+import com.example.batchCooking.repository.RecipeRepositoryCustom;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,27 +18,17 @@ public class RecipeService {
 
     private final RecipeRepository recipeRepository;
 
-    public RecipeService(RecipeRepository recipeRepository) {
+    private final RecipeRepositoryCustom recipeRepositoryCustom;
+
+    public RecipeService(RecipeRepository recipeRepository, @Qualifier("recipeRepositoryImpl") RecipeRepositoryCustom recipeRepositoryCustom) {
         this.recipeRepository = recipeRepository;
+        this.recipeRepositoryCustom = recipeRepositoryCustom;
     }
 
-    public List<Recipe> getRandomNRecipes(Integer recipesNumber, boolean vegetarien, boolean sansPorc) {
-
-        String key = (vegetarien ? "V" : "") + (sansPorc ? "P" : "");
-
-        List<Recipe> recipes = switch (key) {
-            case "VP" -> recipeRepository.findRandomRecipesByTag("vegetarien", recipesNumber)
-                    .stream()
-                    .filter(r -> !"porc".equalsIgnoreCase(r.getTag()))
-                    .collect(Collectors.toList());
-            case "V"  -> recipeRepository.findRandomRecipesByTag("vegetarien", recipesNumber);
-            case "P"  -> recipeRepository.findRandomRecipesExcludingTag("porc", recipesNumber);
-            case ""   -> recipeRepository.findRandomRecipes(recipesNumber);
-            default   -> throw new IllegalArgumentException("Invalid filters");
-        };
-
-        return recipes;
+    public List<RecipeSummaryDTO> getRandomNRecipes(Integer recipesNumber, boolean vegetarien, boolean sansPorc, DifficultyEnum difficultyEnum, CostEnum costEnum) {
+        return recipeRepositoryCustom.findFilteredRandomRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
     }
+
 
     public Optional<Recipe> getRecipeById(Integer id) {
         return recipeRepository.findById(id);

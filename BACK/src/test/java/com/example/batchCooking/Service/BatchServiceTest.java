@@ -1,4 +1,4 @@
-package com.example.batchCooking.Service;
+package com.example.batchCooking.service;
 
 import com.example.batchCooking.service.BatchService;
 import org.junit.jupiter.api.AfterEach;

@@ -1,6 +1,7 @@
 package com.example.batchCooking.controller;
 
 import com.example.batchCooking.configuration.SpringSecurityConfig;
+import com.example.batchCooking.dto.RecipeSummaryDTO;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.service.RecipeService;
 import org.junit.jupiter.api.Test;
@@ -68,17 +69,13 @@ class RecipeControllerTest {
     @Test
     public void testGetRandomRecipes_Success() throws Exception {
         // given
-        Recipe recipe1 = new Recipe();
-        recipe1.setTitle("hachis parmentier végétarien");
-        recipe1.setTag("vegetarien");
+        RecipeSummaryDTO dto1 = new RecipeSummaryDTO(1, "vegetarien", "hachis parmentier végétarien", "30 min", "Facile");
+        RecipeSummaryDTO dto2 = new RecipeSummaryDTO(2, "vegetarien", "ratatouille", "25 min", "Facile");
 
-        Recipe recipe2 = new Recipe();
-        recipe2.setTitle("ratatouille");
-        recipe2.setTag("vegetarien");
 
-        List<Recipe> recipes = Arrays.asList(recipe1, recipe2);
+        List<RecipeSummaryDTO> dtos = Arrays.asList(dto1, dto2);
 
-        when(recipeService.getRandomNRecipes(2, true, false)).thenReturn(recipes);
+        when(recipeService.getRandomNRecipes(2, true, false, null, null)).thenReturn(dtos);
 
         // when + then
         mockMvc.perform(get("/api/recipes/random")
@@ -87,7 +84,9 @@ class RecipeControllerTest {
                         .param("sansPorc", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("hachis parmentier végétarien"))
-                .andExpect(jsonPath("$[1].title").value("ratatouille"));
+                .andExpect(jsonPath("$[0].tag").value("vegetarien"))
+                .andExpect(jsonPath("$[1].title").value("ratatouille"))
+                .andExpect(jsonPath("$[1].tag").value("vegetarien"));
     }
 
     @Test
@@ -103,7 +102,7 @@ class RecipeControllerTest {
     @Test
     public void testGetRandomRecipes_NoContent() throws Exception {
         // given
-        when(recipeService.getRandomNRecipes(2, true, false)).thenReturn(Collections.emptyList());
+        when(recipeService.getRandomNRecipes(2, true, false, null, null)).thenReturn(Collections.emptyList());
 
         // when + then
         mockMvc.perform(get("/api/recipes/random")
