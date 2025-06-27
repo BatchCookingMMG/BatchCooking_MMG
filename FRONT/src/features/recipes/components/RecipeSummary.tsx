@@ -34,15 +34,13 @@ const RecipeSummary = ({
               ⏱️
             </span>
             <span className="font-semibold">Temps préparation</span>
-            <span className="ml-2">{preparationTime} minutes</span>
+            <span className="ml-2">{preparationTime}</span>
           </div>
         </div>
 
         {/* Colonne droite */}
         <div className="space-y-4 text-right">
           <div>
-            <span className="font-semibold">Tag</span>
-            <br />
             <span>{tag}</span>
           </div>
 

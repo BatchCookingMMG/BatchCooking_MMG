@@ -7,7 +7,6 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1>Recettes</h1>
         <Routes>
           {/* Route par défaut : liste aléatoire */}
           <Route path="/" element={<RandomRecipe />} />

@@ -5,7 +5,6 @@ import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.service.RecipeService;
 import org.springframework.http.ResponseEntity;
-import com.example.batchCooking.dto.RecipeSummaryDTO;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -50,21 +49,6 @@ public class RecipeController {
           } catch (IllegalArgumentException e) {
               return ResponseEntity.badRequest().build();
           }
-      }
-
-    // Récupérer les infos générales d'une recette
-      @GetMapping("/id/{id}/summary")
-      public ResponseEntity<RecipeSummaryDTO> getRecipeSummaryById(@PathVariable Integer id) {
-        return recipeService.getRecipeById(id)
-                .map(recipe -> new RecipeSummaryDTO(
-                        recipe.getPreparation_time(),
-                        recipe.getDifficulty(),
-                        recipe.getPeople_number(),
-                        recipe.getCost(),
-                        recipe.getTag()
-                ))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
       }
 }
 
