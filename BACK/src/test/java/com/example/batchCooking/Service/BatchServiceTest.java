@@ -1,10 +1,11 @@
-package com.example.batchCooking.Service;
+package com.example.batchCooking.service;
 
 import com.example.batchCooking.service.BatchService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -45,9 +46,11 @@ class BatchServiceTest {
         ResponseEntity<String> mockResponse =
                 new ResponseEntity<>(expectedResponse, HttpStatus.OK);
 
+        ArgumentCaptor<HttpEntity> httpEntityCaptor = ArgumentCaptor.forClass(HttpEntity.class);
+
         when(restTemplate.postForEntity(
                 anyString(),
-                any(HttpEntity.class),
+                httpEntityCaptor.capture(),
                 eq(String.class)
         )).thenReturn(mockResponse);
 
