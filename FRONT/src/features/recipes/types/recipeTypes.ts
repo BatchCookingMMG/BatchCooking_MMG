@@ -1,4 +1,3 @@
-
 export type Recipe = {
   _id: number;
   title: string;
@@ -9,7 +8,7 @@ export type Recipe = {
   people_number: number;
   ingredients: Ingredient[];
   steps: Step[];
-  image?: string | null; 
+  image?: string | null;
 };
 
 export type Ingredient = {
@@ -22,27 +21,3 @@ export type Ingredient = {
 export type Step = {
   text: string;
 };
-
-export type RecipeHeaderProps = {
-  title: string;
-};
-
-export type RecipeImageProps = {
-  image?: string | null;
-}
-
-export type RecipeIngredientsProps = {
-  ingredients: Ingredient[];
-};
-
-export type RecipeStepsProps = {
-  steps: Step[];
-};
-
-export type RecipeSummaryProps = {
-    preparationTime: string;
-    difficulty: string;
-    peopleNumber: number;
-    cost: string;
-    tag: string; 
-  };
