@@ -1,4 +1,8 @@
-import { RecipeIngredientsProps } from "@/features/recipes/types/recipeTypes";
+import { Ingredient } from "@/features/recipes/types/recipeTypes";
+
+type RecipeIngredientsProps = {
+  ingredients: Ingredient[];
+};
 
 const RecipeIngredients = ({ ingredients }: RecipeIngredientsProps) => {
   return (
