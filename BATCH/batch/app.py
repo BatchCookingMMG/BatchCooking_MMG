@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from batch.BatchCookingProcessor import get_recipes_by_ids, group_steps_by_category_action
+from BatchCookingProcessor import get_recipes_by_ids, group_steps_by_category_action
 
 app = Flask(__name__)
 
@@ -16,11 +16,12 @@ def generate_batch():
         if not recipes:
             return jsonify({"error": "No recipes found for provided IDs"}), 404
 
-        plan = group_steps_by_category_action(recipes)
+        result = group_steps_by_category_action(recipes)
         # shopping_list = generate_shopping_list(recipes)
 
         return jsonify({
-            "batch_plan": plan,
+            "mutualizedSteps": result["mutualizedSteps"],
+            "recipes": result["recipes"]
             # "shopping_list": shopping_list
         })
 
