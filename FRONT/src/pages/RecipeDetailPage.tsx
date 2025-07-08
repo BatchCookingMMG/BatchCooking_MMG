@@ -9,6 +9,7 @@ import RecipeSteps from "@/features/recipes/components/RecipeSteps";
 
 function RecipeDetailPage() {
   const { id } = useParams();
+  console.log("🧩 ID reçu depuis useParams :", id);
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -18,6 +19,7 @@ function RecipeDetailPage() {
     const getRecipe = async () => {
       try {
         const data = await fetchRecipeById(Number(id));
+        console.log("✅ Recette reçue :", data);
         setRecipe(data);
       } catch (err) {
         setError("Erreur lors du chargement de la recette.");

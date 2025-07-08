@@ -21,3 +21,11 @@ export type Ingredient = {
 export type Step = {
   text: string;
 };
+
+export type RecipeListCard = {
+  id: number;
+  title: string;
+  image?: string | null;
+  preparation_time: string;
+  difficulty: string;
+};
