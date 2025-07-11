@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import RandomRecipe from "./RandomRecipe";
 import { RecipeDetailPage } from "@/pages";
+import BatchPage from "./pages/BatchPage";
 
 function App() {
   return (
@@ -13,6 +14,9 @@ function App() {
 
           {/* Détail d'une recette par ID */}
           <Route path="/recipe/:id" element={<RecipeDetailPage />} />
+
+          {/* Route pour le batch */}
+          <Route path="/batch" element={<BatchPage />} />
         </Routes>
       </div>
     </Router>

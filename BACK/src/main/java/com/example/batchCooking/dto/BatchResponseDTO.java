@@ -1,7 +1,6 @@
 package com.example.batchCooking.dto;
 
 import java.util.List;
-import java.util.Map;
 
 public class BatchResponseDTO {
     private List<MutualizedStepDTO> mutualizedSteps;
