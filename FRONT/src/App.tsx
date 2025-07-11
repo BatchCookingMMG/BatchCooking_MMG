@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import FilteredRecipesPage from "@/pages/FilteredRecipesPage";
 import MainLayout from "@/layouts/MainLayout";
 import RandomRecipe from "./RandomRecipe";
 import { RecipeDetailPage } from "@/pages";
@@ -16,6 +17,7 @@ function App() {
 
           {/* Détail recette */}
           <Route path="recipe/:id" element={<RecipeDetailPage />} />
+          <Route path="filtered-recipes" element={<FilteredRecipesPage />} />
         </Route>
       </Routes>
     </div>
