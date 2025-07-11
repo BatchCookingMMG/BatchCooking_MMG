@@ -39,7 +39,7 @@ def get_recipes_by_ids(ids: List[int]) -> List[Dict[str, Any]]:
     print(f"✅ Recettes trouvées : {len(results)}")
     return results
 
-def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> List[str]:
+def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> Dict[str, Any]:
     mutualized_steps_by_category = defaultdict(list)
     recipe_specific_steps = []
 
@@ -60,6 +60,7 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> List[str]:
                     continue
                 try:
                     action_category = pattern["action"]["category_action"]
+                    print("action_category:", action_category, type(action_category))
                     if action_category in MUTUALIZED_ACTIONS:
                         mutualized_steps_by_category[action_category].append(step_text)
                         is_mutualized = True
@@ -79,18 +80,15 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> List[str]:
         key=lambda cat: CATEGORY_ACTION_ORDER.get(cat, float('inf'))
     )
 
-    batch_plan = []
-    batch_plan.append("--- ÉTAPES MUTUALISÉES ---\n")
-    for category in sorted_categories:
-        batch_plan.append(f"--- {category.upper()} ---")
-        batch_plan.extend(mutualized_steps_by_category[category])
+    mutualized_steps = [
+        {"category": category, "steps": mutualized_steps_by_category[category]}
+        for category in sorted_categories
+    ]
 
-    # Ajouter les étapes spécifiques à chaque recette
-    for item in recipe_specific_steps:
-        batch_plan.append(f"\n--- RECETTE : {item['title']} ---\n")
-        batch_plan.extend(item['steps'])
-
-    return batch_plan
+    return {
+        "mutualizedSteps": mutualized_steps,
+        "recipes": recipe_specific_steps
+    }
 
 
 # def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
@@ -127,11 +125,7 @@ def main():
 
     batch_plan = group_steps_by_category_action(recipes)
     # shopping_list = generate_shopping_list(recipes)
-
-    print("\nBatch Cooking Plan:")
-    for step in batch_plan:
-        print("-", step)
-
+    
     # print("\nShopping List:")
     # for ingredient, data in shopping_list.items():
     #     print(f"- {ingredient}: {data['quantity']} {data['unit']} ({data['category']})")
