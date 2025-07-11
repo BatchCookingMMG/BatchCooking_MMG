@@ -14,7 +14,7 @@ const RecipeSummary = ({ recipe }: RecipeSummaryProps) => {
               🍽️
             </span>
             <span className="font-semibold">Personnes</span>
-            <span className="ml-2">{recipe.people_number}</span>
+            <span className="ml-2">{recipe.peopleNumber}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -30,7 +30,7 @@ const RecipeSummary = ({ recipe }: RecipeSummaryProps) => {
               ⏱️
             </span>
             <span className="font-semibold">Temps préparation</span>
-            <span className="ml-2">{recipe.preparation_time}</span>
+            <span className="ml-2">{recipe.preparationTime}</span>
           </div>
         </div>
 
