@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import RandomRecipe from "./RandomRecipe";
 import { RecipeDetailPage } from "@/pages";
 
 function App() {
@@ -8,9 +7,6 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Route par défaut : liste aléatoire */}
-          <Route path="/" element={<RandomRecipe />} />
-
           {/* Détail d'une recette par ID */}
           <Route path="/recipe/:id" element={<RecipeDetailPage />} />
         </Routes>
