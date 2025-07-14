@@ -34,3 +34,22 @@ export const fetchFilteredRecipes = async (filters: {
   const rawData = await response.json();
   return convertKeysToCamel<RecipeListCard[]>(rawData);
 };
+
+// ✅ Pour remplacer UNE recette aléatoire avec les mêmes filtres
+export const fetchOneFilteredRecipe = async (filters: {
+  vegetarien?: boolean;
+  sansPorc?: boolean;
+  difficulty?: string;
+}): Promise<RecipeListCard> => {
+  const query = new URLSearchParams();
+  query.append("recipesNumber", "1"); // on demande juste 1
+  if (filters.vegetarien) query.append("vegetarien", "true");
+  if (filters.sansPorc) query.append("sansPorc", "true");
+  if (filters.difficulty) query.append("difficulty", filters.difficulty);
+
+  const response = await fetch(`${API_URL}/api/recipes/random?${query.toString()}`);
+  if (!response.ok) throw new Error("Erreur serveur");
+
+  const rawData = await response.json();
+  return convertKeysToCamel<RecipeListCard[]>(rawData)[0]; // on retourne la première
+};

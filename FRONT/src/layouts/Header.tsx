@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between px-4  bg-white shadow-md">
-    {/* Logo à gauche */}
-    <img src="/images/logo.png" alt="Logo" className="h-25 w-auto" />
+    <header className="flex items-center justify-between px-4 bg-white shadow-md">
+      {/* Logo cliquable */}
+      <Link to="/">
+        <img src="/images/logo.png" alt="Logo" className="h-25 w-auto cursor-pointer" />
+      </Link>
   
     {/* Filtres : cachés sur mobile, visibles à partir de md */}
     <nav className="hidden md:flex gap-4">

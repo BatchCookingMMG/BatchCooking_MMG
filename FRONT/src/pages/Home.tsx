@@ -1,11 +1,10 @@
 // src/pages/Home.tsx
-import FilterForm from "@/features/filters/FilterForm";
+import HeroSection from "@/features/filters/components/HeroSection";
 
 export default function Home() {
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Bienvenue sur Batch Cooking 🧑‍🍳</h1>
-      <FilterForm />
+    <div className="p-6 min-h-screen bg-white">
+      <HeroSection />
     </div>
   );
 }

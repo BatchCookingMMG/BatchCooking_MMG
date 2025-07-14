@@ -9,20 +9,29 @@ type Props = {
 export default function RecipeCard({ recipe }: Props) {
   return (
     <Link to={`/recipe/${recipe.id}`}>
-      <div className="bg-[#FDF8F4] border border-[#E6DCD2] rounded-xl shadow-sm p-3 w-full max-w-xs mx-auto hover:shadow-md transition-all">
-        <img
-          src={recipe.image || placeholderImg}
-          alt={recipe.title}
-          className="w-full h-32 object-cover rounded-md"
-        />
-        <h3 className="text-base font-semibold mt-3 text-gray-800 truncate">
+    <div className="bg-white rounded-xl shadow-md overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg duration-200 max-w-[240px] flex flex-col">
+      <img
+        src={recipe.image || placeholderImg}
+        alt={recipe.title}
+        className="w-full h-48 object-cover"
+      />
+      <div className="p-3 flex flex-col flex-grow">
+        <h3 className="text-base font-semibold text-gray-800 truncate">
           {recipe.title}
         </h3>
-        <div className="text-xs text-gray-500 mt-1 flex gap-2">
+        <div className="text-sm text-gray-500 mt-1 flex gap-2">
           <span>⏱ {recipe.preparation_time}</span>
           <span>🧑‍🍳 {recipe.difficulty}</span>
         </div>
       </div>
-    </Link>
+      <div className="flex justify-between items-center px-3 pb-2 mt-auto">
+        <button className="text-sm bg-orange-200 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-300">
+          Voir la recette
+        </button>
+        <span className="text-gray-500 text-xl">🍽</span>
+      </div>
+    </div>
+  </Link>
+  
   );
 }
