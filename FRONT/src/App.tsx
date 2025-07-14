@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
-import { RecipeDetailPage } from "@/pages";
+import Home from "@/pages/Home";
+import { RecipeDetailPage,FilteredRecipesPage } from "@/pages";
+
 
 function App() {
   return (
@@ -10,8 +12,10 @@ function App() {
         <Routes>
           {/* Toutes les routes qui partagent le même layout passent ici */}
           <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
             {/* Détail recette */}
             <Route path="recipe/:id" element={<RecipeDetailPage />} />
+            <Route path="filtered-recipes" element={<FilteredRecipesPage />} /> 
           </Route>
         </Routes>
       </div>
