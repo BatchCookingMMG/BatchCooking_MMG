@@ -91,21 +91,21 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> Dict[str, A
     }
 
 
-# def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-#     shopping_list = defaultdict(lambda: {'quantity': 0, 'unit': '', 'category': ''})
+def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    shopping_list = defaultdict(lambda: {'quantity': 0, 'unit': '', 'category': ''})
 
-#     for recipe in recipes:
-#         for ing in recipe.get('ingredients', []):
-#             key = ing['ingredient']
-#             try:
-#                 quantity = float(ing['quantity'])
-#             except (ValueError, TypeError):
-#                 quantity = 0
-#             shopping_list[key]['quantity'] += quantity
-#             shopping_list[key]['unit'] = ing['unit']
-#             shopping_list[key]['category'] = ing['category']
+    for recipe in recipes:
+        for ing in recipe.get('ingredients', []):
+            key = ing['ingredient']
+            try:
+                quantity = float(ing['quantity'])
+            except (ValueError, TypeError):
+                quantity = 0
+            shopping_list[key]['quantity'] += quantity
+            shopping_list[key]['unit'] = ing['unit']
+            shopping_list[key]['category'] = ing['category']
 
-#     return dict(shopping_list)
+    return dict(shopping_list)
 
 def main():
     if len(sys.argv) < 2:
@@ -123,13 +123,5 @@ def main():
         print("Aucune recette trouvée.")
         sys.exit(1)
 
-    batch_plan = group_steps_by_category_action(recipes)
-    # shopping_list = generate_shopping_list(recipes)
-    
-    # print("\nShopping List:")
-    # for ingredient, data in shopping_list.items():
-    #     print(f"- {ingredient}: {data['quantity']} {data['unit']} ({data['category']})")
-
-# 👉 Ce bloc ne s’exécute que si tu fais python BatchCookingProcessor.py directement
 if __name__ == "__main__":
     main()
