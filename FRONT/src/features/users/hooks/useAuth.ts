@@ -16,7 +16,7 @@ export const useAuth = () => {
       // Stocker le token
       localStorage.setItem("jwtToken", response.token);
       
-      console.log("Connexion réussie:", response.user);
+      console.log("Connexion réussie");
       return response;
       
     } catch (err) {
