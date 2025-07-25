@@ -1,7 +1,8 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import RandomRecipe from "./RandomRecipe";
-import { RecipeDetailPage } from "@/pages";
+import MainLayout from "@/layouts/MainLayout";
+import Home from "@/pages/Home";
+import { RecipeDetailPage, FilteredRecipesPage } from "@/pages";
 import BatchPage from "./pages/BatchPage";
 
 function App() {
@@ -9,11 +10,13 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Route par défaut : liste aléatoire */}
-          <Route path="/" element={<RandomRecipe />} />
-
-          {/* Détail d'une recette par ID */}
-          <Route path="/recipe/:id" element={<RecipeDetailPage />} />
+          {/* Toutes les routes qui partagent le même layout passent ici */}
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
+            {/* Détail recette */}
+            <Route path="recipe/:id" element={<RecipeDetailPage />} />
+            <Route path="filtered-recipes" element={<FilteredRecipesPage />} />
+          </Route>
 
           {/* Route pour le batch */}
           <Route path="/batch" element={<BatchPage />} />
