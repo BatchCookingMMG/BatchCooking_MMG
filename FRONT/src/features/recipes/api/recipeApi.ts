@@ -1,5 +1,5 @@
 import { convertKeysToCamel } from "../../../utils/caseConverter";
-import { Recipe, RecipeListCard  } from '@/features/recipes/types/recipeTypes';
+import { Recipe } from '@/features/recipes/types/recipeTypes';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -21,7 +21,7 @@ export const fetchFilteredRecipes = async (filters: {
   vegetarien?: boolean;
   sansPorc?: boolean;
   difficulty?: string;
-}): Promise<RecipeListCard[]> => {
+}): Promise<Recipe[]> => {
   const query = new URLSearchParams();
   query.append("recipesNumber", filters.recipesNumber.toString());
   if (filters.vegetarien) query.append("vegetarien", "true");
@@ -32,7 +32,7 @@ export const fetchFilteredRecipes = async (filters: {
   if (!response.ok) throw new Error("Erreur serveur");
 
   const rawData = await response.json();
-  return convertKeysToCamel<RecipeListCard[]>(rawData);
+  return convertKeysToCamel<Recipe[]>(rawData);
 };
 
 // ✅ Pour remplacer UNE recette aléatoire avec les mêmes filtres
@@ -40,7 +40,7 @@ export const fetchOneFilteredRecipe = async (filters: {
   vegetarien?: boolean;
   sansPorc?: boolean;
   difficulty?: string;
-}): Promise<RecipeListCard> => {
+}): Promise<Recipe> => {
   const query = new URLSearchParams();
   query.append("recipesNumber", "1"); // on demande juste 1
   if (filters.vegetarien) query.append("vegetarien", "true");
@@ -51,5 +51,5 @@ export const fetchOneFilteredRecipe = async (filters: {
   if (!response.ok) throw new Error("Erreur serveur");
 
   const rawData = await response.json();
-  return convertKeysToCamel<RecipeListCard[]>(rawData)[0]; // on retourne la première
+  return convertKeysToCamel<Recipe[]>(rawData)[0]; // on retourne la première
 };
