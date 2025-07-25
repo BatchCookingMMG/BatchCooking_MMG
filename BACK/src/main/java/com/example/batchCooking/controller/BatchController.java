@@ -31,7 +31,8 @@ public class BatchController {
             BatchResponseDTO response = objectMapper.readValue(resultJson, BatchResponseDTO.class);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(500).build();
+            e.printStackTrace(); // ← affiche l'erreur dans la console
+            return ResponseEntity.status(500).body(null);
         }
     }
 }
