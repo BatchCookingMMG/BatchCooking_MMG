@@ -1,0 +1,93 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  # === FRONT - React ===
+  frontend:
+    name: Build front end (React + Typescript)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FRONT
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies (CI mode)
+        run: npm ci
+      - name: build
+        run: npm run build
+      #- name: Run tests
+      #  run: npm test
+
+      #- name: Build & push Docker image
+      #  run: |
+      #    docker build -t my-org/front:${{ github.sha }} .
+      #    echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #    docker tag my-org/front:${{ github.sha }} my-org/front:latest
+      #    docker push my-org/front:${{ github.sha }}
+      #    docker push my-org/front:latest
+
+  # === BACK - Java Spring Boot ===
+  backend:
+    name: Build back end
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BACK
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - run: mvn clean install
+
+      #- name: Build & push Docker image
+      #  run: |
+      #    docker build -t my-org/back:${{ github.sha }} .
+      #    echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #    docker tag my-org/back:${{ github.sha }} my-org/back:latest
+      #    docker push my-org/back:${{ github.sha }}
+      #    docker push my-org/back:latest
+
+  # === BATCH - Python ===
+  batch:
+    name: Build python service batch
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: BATCH
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+      - name: Run unit tests with unittest
+        run: python -m unittest discover -s tests
+
+      #- name: Build & push Docker image
+      #  run: |
+      #    docker build -t my-org/batch:${{ github.sha }} .
+      #    echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      #    docker tag my-org/batch:${{ github.sha }} my-org/batch:latest
+      #    docker push my-org/batch:${{ github.sha }}
+      #    docker push my-org/batch:latest

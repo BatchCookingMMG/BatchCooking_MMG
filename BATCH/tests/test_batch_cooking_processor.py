@@ -4,9 +4,13 @@ from batch.BatchCookingProcessor import get_recipes_by_ids, group_steps_by_categ
 
 class TestBatchCookingProcessor(unittest.TestCase):
 
-    @patch('batch.BatchCookingProcessor.collection')
-    def test_get_recipes_by_ids(self, mock_collection):
-        # Mock de collection.find
+    @patch('batch.BatchCookingProcessor.get_collection')
+    def test_get_recipes_by_ids(self, mock_get_collection):
+        # Création d’un faux objet collection
+        mock_collection = MagicMock()
+        mock_get_collection.return_value = mock_collection
+
+        # Simule les résultats de collection.find
         mock_collection.find.return_value = [
             {"title": "Pâtes", "steps": []},
             {"title": "Salade", "steps": []}
@@ -55,14 +59,17 @@ class TestBatchCookingProcessor(unittest.TestCase):
 
         batch_plan = group_steps_by_category_action(recipes)
 
-        # Vérifie que les étapes mutualisées apparaissent dans l'ordre
-        self.assertIn("--- ÉTAPES MUTUALISÉES ---", batch_plan)
-        self.assertIn("Éplucher les carottes", batch_plan)
-        self.assertIn("Laver les poireaux", batch_plan)
-        self.assertIn("Couper les carottes", batch_plan)
-        # Etapes spécifiques par recette
-        self.assertTrue(any("RECETTE : Salade de carottes" in step for step in batch_plan))
-        self.assertIn("Ajouter du citron", batch_plan)
+        # Vérifier que les étapes mutualisées sont bien regroupées
+        mutualized = batch_plan["mutualizedSteps"]
+        all_mutualized_texts = [step for cat in mutualized for step in cat["steps"]]
+        self.assertIn("Éplucher les carottes", all_mutualized_texts)
+        self.assertIn("Laver les poireaux", all_mutualized_texts)
+        self.assertIn("Couper les carottes", all_mutualized_texts)
+
+        # Vérifier les étapes spécifiques par recette
+        recipes_output = batch_plan["recipes"]
+        self.assertEqual(recipes_output[0]["title"], "Salade de carottes")
+        self.assertIn("Ajouter du citron", recipes_output[0]["steps"])
 
 if __name__ == '__main__':
     unittest.main()

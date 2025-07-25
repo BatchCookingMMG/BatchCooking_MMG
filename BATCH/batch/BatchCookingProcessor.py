@@ -9,17 +9,20 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
-# Charger les variables d'environnement
-load_dotenv()
+def get_collection():
+    # Charger les variables d'environnement
+    load_dotenv()
 
-# Connexion à MongoDB (via URI sécurisée dans .env)
-MONGO_URI = os.getenv("MONGO_URI")
-MONGO_DB = os.getenv("MONGO_DB")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+    # Connexion à MongoDB (via URI sécurisée dans .env)
+    MONGO_URI = os.getenv("MONGO_URI")
+    MONGO_DB = os.getenv("MONGO_DB")
+    MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+    if not all([MONGO_URI, MONGO_DB, MONGO_COLLECTION]):
+        raise ValueError("Les variables d'environnement MongoDB sont incomplètes.")
 
-client = MongoClient(MONGO_URI)
-db = client[MONGO_DB]
-collection = db[MONGO_COLLECTION]
+    client = MongoClient(MONGO_URI)
+    db = client[MONGO_DB]
+    return db[MONGO_COLLECTION]
 
 CATEGORY_ACTION_ORDER = {
     "éplucher": 0,
@@ -35,6 +38,7 @@ MUTUALIZED_ACTIONS = {"éplucher", "laver", "couper"}
 
 def get_recipes_by_ids(ids: List[int]) -> List[Dict[str, Any]]:
     print("🔍 get_recipes_by_ids a reçu :", ids, type(ids[0]) if ids else "liste vide")
+    collection = get_collection()
     results = list(collection.find({"_id": {"$in": ids}}, {"_id": 0}))
     print(f"✅ Recettes trouvées : {len(results)}")
     return results
