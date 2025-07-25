@@ -13,5 +13,5 @@ COPY target/*.jar app.jar
 # Exposer le port sur lequel Spring Boot tourne
 EXPOSE 8083
 
-# Définir la commande de démarrage de l'application
+# Définir la commande de démarrage de l'ap plication
 ENTRYPOINT ["java", "-jar", "app.jar"]
