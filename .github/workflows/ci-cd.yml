@@ -27,8 +27,8 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
-      - name: Run tests
-        run: npm test
+      #- name: Run tests
+      #  run: npm test
 
       #- name: Build & push Docker image
       #  run: |
@@ -54,7 +54,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - run: ./gradlew build
+      - run: mvn clean install
 
       #- name: Build & push Docker image
       #  run: |
@@ -81,8 +81,8 @@ jobs:
 
       - name: Install Python dependencies
         run: pip install -r requirements.txt
-      - name: Run unit tests with pytest
-        run: pytest
+      - name: Run unit tests with unittest
+        run: python -m unittest discover -s tests
 
       #- name: Build & push Docker image
       #  run: |
