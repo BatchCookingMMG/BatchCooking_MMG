@@ -1,47 +1,23 @@
-import React, { useState, FormEvent } from "react";
-import { useAuth } from "@/features/users/hooks/useAuth";
-import { RegisterRequest } from "@/features/users/types/userTypes";
+import React from "react";
+import { useRegisterForm } from "@/features/users";
 
 type RegisterFormProps = {
-  onSuccess?: () => void; // Callback optionnel après inscription réussie
+  onSuccess?: () => void;
 };
 
 const RegisterForm = ({ onSuccess }: RegisterFormProps) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [validationError, setValidationError] = useState("");
-
-  const { register, loading, error } = useAuth();
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
-    // Validation côté client
-    setValidationError("");
-
-    if (password !== confirmPassword) {
-      setValidationError("Les mots de passe ne correspondent pas");
-      return;
-    }
-
-    if (password.length < 6) {
-      setValidationError("Le mot de passe doit contenir au moins 6 caractères");
-      return;
-    }
-
-    const registerData: RegisterRequest = {
-      email,
-      password,
-      confirmPassword,
-    };
-
-    const response = await register(registerData);
-
-    if (response && onSuccess) {
-      onSuccess(); // Redirection ou autre action après succès
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    validationError,
+    loading,
+    error,
+    handleSubmit,
+  } = useRegisterForm({ onSuccess });
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 400, margin: "auto" }}>

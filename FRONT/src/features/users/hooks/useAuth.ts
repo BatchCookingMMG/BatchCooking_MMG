@@ -1,22 +1,37 @@
-import { useState } from 'react';
-import { loginUser, registerUser } from '@/features/users/api/authApi';
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from '@/features/users/types/userTypes';
+import { useState, useEffect } from 'react';
+import { loginUser, registerUser, getCurrentUser, LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from '@/features/users';
 
 export const useAuth = () => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem("jwtToken");
+      if (token) {
+        try {
+          const currentUser = await getCurrentUser(token);
+          setUser(currentUser);
+        } catch {
+          // Token invalide ou autre erreur : on nettoie
+          localStorage.removeItem("jwtToken");
+          setUser(null);
+        }
+      }
+      setIsInitialized(true);
+    };
+    initializeAuth();
+  }, []);
 
   const login = async (credentials: LoginRequest): Promise<LoginResponse | null> => {
     setError(null);
     setLoading(true);
-
     try {
       const response = await loginUser(credentials);
-      
-      // Stocker le token
       localStorage.setItem("jwtToken", response.token);
-      console.log("Connexion réussie");
-      
+      setUser(response.user);
       return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erreur lors de la connexion";
@@ -30,16 +45,12 @@ export const useAuth = () => {
   const register = async (userData: RegisterRequest): Promise<RegisterResponse | null> => {
     setError(null);
     setLoading(true);
-
     try {
       const response = await registerUser(userData);
-      
-      // Stocker le token (votre backend renvoie un token lors de l'inscription)
       if (response.user?.token) {
         localStorage.setItem("jwtToken", response.user.token);
-        console.log("Inscription réussie");
+        setUser(response.user.user); // Accès correct au User imbriqué
       }
-      
       return response;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Erreur lors de l'inscription";
@@ -52,20 +63,22 @@ export const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem("jwtToken");
-    // Autres actions de déconnexion si nécessaire
+    setUser(null);
   };
 
   const isAuthenticated = (): boolean => {
-    return !!localStorage.getItem("jwtToken");
+    return !!user && !!localStorage.getItem("jwtToken");
   };
 
   return {
+    user,
     login,
     register,
     logout,
     isAuthenticated,
     loading,
     error,
+    isInitialized,
     clearError: () => setError(null)
   };
 };
