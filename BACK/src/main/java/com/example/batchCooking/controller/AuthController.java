@@ -2,7 +2,7 @@ package com.example.batchCooking.controller;
 
 import com.example.batchCooking.dto.LoginRequestDTO;
 import com.example.batchCooking.dto.LoginResponseDTO;
-import com.example.batchCooking.dto.RegisterRequestDTO; // Import ajouté
+import com.example.batchCooking.dto.RegisterRequestDTO;
 import com.example.batchCooking.model.User;
 import com.example.batchCooking.security.JwtTokenProvider;
 import com.example.batchCooking.service.UserService;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
@@ -119,4 +120,26 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non authentifié");
+        }
+
+        // Ici on suppose que principal est le nom de l'utilisateur (email)
+        String email = authentication.getName();
+
+        User user = userService.findByEmail(email)
+                .orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Utilisateur non trouvé");
+        }
+
+        return ResponseEntity.ok(user);
+    }
+
+
 }
