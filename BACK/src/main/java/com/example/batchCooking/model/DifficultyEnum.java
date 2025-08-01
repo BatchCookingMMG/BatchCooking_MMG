@@ -1,5 +1,7 @@
 package com.example.batchCooking.model;
 
+import com.example.batchCooking.exception.InvalidRecipeFilterException;
+
 public enum DifficultyEnum {
     TRES_FACILE("très facile"),
     FACILE("facile"),
@@ -19,6 +21,6 @@ public enum DifficultyEnum {
         for (DifficultyEnum d : values()) {
             if (d.label.equalsIgnoreCase(label)) return d;
         }
-        throw new IllegalArgumentException("Invalid difficulty value: " + label);
+        throw new InvalidRecipeFilterException("Paramètre 'difficulty' invalide : " + label);
     }
 }

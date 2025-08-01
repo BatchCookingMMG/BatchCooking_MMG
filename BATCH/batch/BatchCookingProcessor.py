@@ -9,17 +9,20 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
 
-# Charger les variables d'environnement
-load_dotenv()
+def get_collection():
+    # Charger les variables d'environnement
+    load_dotenv()
 
-# Connexion à MongoDB (via URI sécurisée dans .env)
-MONGO_URI = os.getenv("MONGO_URI")
-MONGO_DB = os.getenv("MONGO_DB")
-MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+    # Connexion à MongoDB (via URI sécurisée dans .env)
+    MONGO_URI = os.getenv("MONGO_URI")
+    MONGO_DB = os.getenv("MONGO_DB")
+    MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+    if not all([MONGO_URI, MONGO_DB, MONGO_COLLECTION]):
+        raise ValueError("Les variables d'environnement MongoDB sont incomplètes.")
 
-client = MongoClient(MONGO_URI)
-db = client[MONGO_DB]
-collection = db[MONGO_COLLECTION]
+    client = MongoClient(MONGO_URI)
+    db = client[MONGO_DB]
+    return db[MONGO_COLLECTION]
 
 CATEGORY_ACTION_ORDER = {
     "éplucher": 0,
@@ -35,6 +38,7 @@ MUTUALIZED_ACTIONS = {"éplucher", "laver", "couper"}
 
 def get_recipes_by_ids(ids: List[int]) -> List[Dict[str, Any]]:
     print("🔍 get_recipes_by_ids a reçu :", ids, type(ids[0]) if ids else "liste vide")
+    collection = get_collection()
     results = list(collection.find({"_id": {"$in": ids}}, {"_id": 0}))
     print(f"✅ Recettes trouvées : {len(results)}")
     return results
@@ -91,21 +95,21 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> Dict[str, A
     }
 
 
-# def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-#     shopping_list = defaultdict(lambda: {'quantity': 0, 'unit': '', 'category': ''})
+def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    shopping_list = defaultdict(lambda: {'quantity': 0, 'unit': '', 'category': ''})
 
-#     for recipe in recipes:
-#         for ing in recipe.get('ingredients', []):
-#             key = ing['ingredient']
-#             try:
-#                 quantity = float(ing['quantity'])
-#             except (ValueError, TypeError):
-#                 quantity = 0
-#             shopping_list[key]['quantity'] += quantity
-#             shopping_list[key]['unit'] = ing['unit']
-#             shopping_list[key]['category'] = ing['category']
+    for recipe in recipes:
+        for ing in recipe.get('ingredients', []):
+            key = ing['ingredient']
+            try:
+                quantity = float(ing['quantity'])
+            except (ValueError, TypeError):
+                quantity = 0
+            shopping_list[key]['quantity'] += quantity
+            shopping_list[key]['unit'] = ing['unit']
+            shopping_list[key]['category'] = ing['category']
 
-#     return dict(shopping_list)
+    return dict(shopping_list)
 
 def main():
     if len(sys.argv) < 2:
@@ -123,13 +127,5 @@ def main():
         print("Aucune recette trouvée.")
         sys.exit(1)
 
-    batch_plan = group_steps_by_category_action(recipes)
-    # shopping_list = generate_shopping_list(recipes)
-    
-    # print("\nShopping List:")
-    # for ingredient, data in shopping_list.items():
-    #     print(f"- {ingredient}: {data['quantity']} {data['unit']} ({data['category']})")
-
-# 👉 Ce bloc ne s’exécute que si tu fais python BatchCookingProcessor.py directement
 if __name__ == "__main__":
     main()
