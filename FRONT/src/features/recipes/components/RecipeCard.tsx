@@ -23,7 +23,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             <span>⏱ {recipe.preparationTime}</span>
             <span>🧑‍🍳 {recipe.difficulty}</span>
           </div>
-        </div>
+        </div> 
         <div className="flex justify-between items-center px-3 pb-2 mt-auto">
           <button className="text-sm bg-orange-200 text-orange-700 px-3 py-1 rounded-full hover:bg-orange-300">
             Voir la recette
