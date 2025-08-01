@@ -27,7 +27,6 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    // Récupérer une recette par son ID
     @GetMapping("/id/{id}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer id) {
         logger.info("GET /api/recipes/id/{} appelé", id);
@@ -39,7 +38,6 @@ public class RecipeController {
         return ResponseEntity.ok(recipe);
     }
 
-    // Récupérer N recettes aléatoires selon filtres vegetarien/porc
       @GetMapping("/random")
       public ResponseEntity<List<RecipeSummaryDTO>> getRandomRecipes(
               @RequestParam @Min(2) @Max(14) Integer recipesNumber,

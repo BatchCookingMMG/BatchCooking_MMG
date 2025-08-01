@@ -41,5 +41,10 @@ public class GlobalExceptionHandler {
         logger.warn("Filtre de recette invalide : {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Filtre invalide : " + ex.getMessage());
     }
+
+    @ExceptionHandler(BatchGenerationException.class)
+    public ResponseEntity<String> handleBatchGenerationException(BatchGenerationException ex) {
+        return ResponseEntity.status(500).body("Erreur interne lors de la génération du batch.");
+    }
 }
 

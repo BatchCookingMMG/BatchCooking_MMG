@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class RecipeService {
@@ -31,7 +30,9 @@ public class RecipeService {
 
     public List<RecipeSummaryDTO> getRandomNRecipes(Integer recipesNumber, boolean vegetarien, boolean sansPorc, DifficultyEnum difficultyEnum, CostEnum costEnum) {
         logger.info("Recherche de {} recettes aléatoires avec filtres : vegetarien={}, sansPorc={}, difficulty={}, cost={}",
-                recipesNumber, vegetarien, sansPorc,
+                recipesNumber,
+                vegetarien,
+                sansPorc,
                 difficultyEnum != null ? difficultyEnum.name() : "Aucun",
                 costEnum != null ? costEnum.name() : "Aucun");
 
@@ -39,13 +40,13 @@ public class RecipeService {
                 recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum
         );
 
-        logger.info("Résultat : {} recette(s) trouvée(s)", recipes.size());
+        logger.info("Recettes demandées : {}, recettes retournées : {}", recipesNumber, recipes.size());
         return recipes;    }
 
 
     public Optional<Recipe> getRecipeById(Integer id) {
-
         logger.info("Recherche de la recette avec ID={}", id);
+
         Optional<Recipe> result = recipeRepository.findById(id);
 
         if (result.isPresent()) {
@@ -53,6 +54,6 @@ public class RecipeService {
         } else {
             logger.warn("Aucune recette trouvée avec ID={}", id);
         }
-
-        return result;    }
+        return result;
+    }
 }

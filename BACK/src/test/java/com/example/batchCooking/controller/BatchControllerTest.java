@@ -2,6 +2,7 @@ package com.example.batchCooking.controller;
 
 import com.example.batchCooking.configuration.SpringSecurityConfig;
 import com.example.batchCooking.dto.RecipeRequestDTO;
+import com.example.batchCooking.exception.BatchGenerationException;
 import com.example.batchCooking.service.BatchService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -26,7 +28,7 @@ class BatchControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
+    @MockitoBean
     private BatchService batchService;
 
     @Autowired
@@ -50,7 +52,6 @@ class BatchControllerTest {
         RecipeRequestDTO requestDTO = new RecipeRequestDTO();
         requestDTO.setRecipeIds(recipeIds);
 
-        // Simuler la réponse JSON de Python en String
         String resultJson = """
         {
             "mutualizedSteps": [
@@ -93,4 +94,23 @@ class BatchControllerTest {
                 .andExpect(jsonPath("$.recipes[0].title").value("Salade de tomates"))
                 .andExpect(jsonPath("$.recipes[1].steps[1]").value("Ajouter du bouillon"));
     }
+
+    @Test
+    void testGenerateBatchThrowsExceptionResponse500() throws Exception {
+        // given
+        List<Integer> recipeIds = List.of(1, 2);
+        RecipeRequestDTO requestDTO = new RecipeRequestDTO();
+        requestDTO.setRecipeIds(recipeIds);
+
+        String requestBody = objectMapper.writeValueAsString(requestDTO);
+        when(batchService.generateBatch(anyList())).thenThrow(new BatchGenerationException("Erreur simulée", new RuntimeException("cause")));
+
+        // when + then
+        mockMvc.perform(post("/api/batch/generate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isInternalServerError())
+                .andExpect(content().string("Erreur interne lors de la génération du batch."));
+    }
+
 }
