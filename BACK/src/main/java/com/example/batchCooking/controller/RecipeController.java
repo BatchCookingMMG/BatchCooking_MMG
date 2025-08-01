@@ -1,10 +1,14 @@
 package com.example.batchCooking.controller;
 import com.example.batchCooking.dto.RecipeSummaryDTO;
+import com.example.batchCooking.exception.RecipeNotFoundException;
 import com.example.batchCooking.model.CostEnum;
 import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.service.RecipeService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -13,8 +17,10 @@ import jakarta.validation.constraints.Max;
 
 @RestController
 @RequestMapping("/api/recipes")
+@Validated
 public class RecipeController {
 
+    private static final Logger logger = LogManager.getLogger(RecipeController.class);
     private RecipeService recipeService;
 
     public RecipeController(RecipeService recipeService) {
@@ -24,9 +30,13 @@ public class RecipeController {
     // Récupérer une recette par son ID
     @GetMapping("/id/{id}")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Integer id) {
-        return recipeService.getRecipeById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        logger.info("GET /api/recipes/id/{} appelé", id);
+
+        Recipe recipe = recipeService.getRecipeById(id)
+                .orElseThrow(() -> new RecipeNotFoundException(id));
+
+        logger.info("Recette trouvée pour id={}", id);
+        return ResponseEntity.ok(recipe);
     }
 
     // Récupérer N recettes aléatoires selon filtres vegetarien/porc
@@ -38,17 +48,19 @@ public class RecipeController {
               @RequestParam(required = false) String difficulty,
               @RequestParam(required = false) String cost) {
 
-          try {
+          logger.info("GET /api/recipes/random appelé avec recipesNumber={}, vegetarien={}, sansPorc={}, difficulty={}, cost={}",
+                  recipesNumber, vegetarien, sansPorc, difficulty, cost);
+
               DifficultyEnum difficultyEnum = difficulty != null ? DifficultyEnum.fromLabel(difficulty) : null;
               CostEnum costEnum = cost != null ? CostEnum.fromLabel(cost) : null;
+
               List<RecipeSummaryDTO> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
               if (recipes.isEmpty()) {
+                  logger.info("Aucune recette trouvée pour les critères fournis");
                   return ResponseEntity.noContent().build();
               }
+              logger.info("{} recettes trouvées", recipes.size());
               return ResponseEntity.ok(recipes);
-          } catch (IllegalArgumentException e) {
-              return ResponseEntity.badRequest().build();
-          }
       }
 }
 
