@@ -1,6 +1,6 @@
-import { Recipe } from '@/features/recipes/types/recipeTypes';
-import placeholderImg from '/images/placeholder.png'; // ✅ Chemin correct pour public/
-import { Link } from 'react-router-dom';
+import { Recipe } from "@/features/recipes/types/recipeTypes";
+import placeholderImg from "/images/placeholder.png";
+import { Link } from "react-router-dom";
 
 type RecipeCardProps = {
   recipe: Recipe;
@@ -32,6 +32,5 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
         </div>
       </div>
     </Link>
-
   );
 }
