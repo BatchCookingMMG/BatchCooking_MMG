@@ -5,7 +5,7 @@ export type Recipe = {
   preparationTime: string;
   difficulty: string;
   cost: string;
-  people_number: number;
+  peopleNumber: number;
   ingredients: Ingredient[];
   steps: Step[];
   image?: string | null;
