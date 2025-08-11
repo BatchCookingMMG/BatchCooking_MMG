@@ -48,12 +48,9 @@ public class RecipeRepositoryImpl implements RecipeRepositoryCustom {
                 : Aggregation.match(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         SampleOperation sample = Aggregation.sample(size);
 
-        ProjectionOperation project = Aggregation.project()
-                .andExpression("_id").as("id")
-                .and("tag").as("tag")
-                .and("title").as("title")
-                .and("preparation_time").as("preparation_time")
-                .and("difficulty").as("difficulty");
+        ProjectionOperation project = Aggregation
+                .project("tag", "title", "preparation_time", "difficulty", "imageUrl")
+                .andExpression("_id").as("id");
 
         Aggregation aggregation = (match == null)
                 ? Aggregation.newAggregation(sample, project)
