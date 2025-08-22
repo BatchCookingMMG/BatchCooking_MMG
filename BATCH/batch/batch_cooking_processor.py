@@ -1,28 +1,52 @@
 import sys
 import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+import json
+import os
 
 from collections import defaultdict
 from typing import List, Dict, Any
-import json
+
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import os
 
+from backend_log_handler import get_logger
+from exceptions import (
+    BatchCookingException,
+    MongoConnectionException,
+    InvalidRecipeIdException,
+    RecipeNotFoundException,
+    InvalidStepPatternException
+)
+
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+# ---------------------------------
+# Logger
+# ---------------------------------
+BACKEND_LOG_URL = "http://back:8083/api/logs/event"
+logger = get_logger("BatchCooking", BACKEND_LOG_URL)
+
+# -------------------------
+# Connexion MongoDB
+# -------------------------
 def get_collection():
-    # Charger les variables d'environnement
     load_dotenv()
 
-    # Connexion à MongoDB (via URI sécurisée dans .env)
     MONGO_URI = os.getenv("MONGO_URI")
     MONGO_DB = os.getenv("MONGO_DB")
     MONGO_COLLECTION = os.getenv("MONGO_COLLECTION")
+    
     if not all([MONGO_URI, MONGO_DB, MONGO_COLLECTION]):
-        raise ValueError("Les variables d'environnement MongoDB sont incomplètes.")
-
-    client = MongoClient(MONGO_URI)
-    db = client[MONGO_DB]
-    return db[MONGO_COLLECTION]
+        logger.error("Variables d'environnement MongoDB manquantes")
+        raise MongoConnectionException("Les variables d'environnement MongoDB sont incomplètes.")
+    
+    try:
+        client = MongoClient(MONGO_URI)
+        db = client[MONGO_DB]
+        return db[MONGO_COLLECTION]
+    except Exception as e:
+        logger.exception("Erreur de connexion MongoDB")
+        raise MongoConnectionException("Impossible de se connecter à MongoDB") from e
 
 CATEGORY_ACTION_ORDER = {
     "éplucher": 0,
@@ -36,11 +60,22 @@ CATEGORY_ACTION_ORDER = {
 
 MUTUALIZED_ACTIONS = {"éplucher", "laver", "couper"}
 
+# ---------------------------------
+# Fonctions principales
+# ---------------------------------
 def get_recipes_by_ids(ids: List[int]) -> List[Dict[str, Any]]:
-    print("🔍 get_recipes_by_ids a reçu :", ids, type(ids[0]) if ids else "liste vide")
+    logger.info("get_recipes_by_ids reçu: %s", ids)
+    if not all(isinstance(i, int) for i in ids):
+        raise InvalidRecipeIdException("Tous les IDs doivent être des entiers.")
+    
     collection = get_collection()
     results = list(collection.find({"_id": {"$in": ids}}, {"_id": 0}))
-    print(f"✅ Recettes trouvées : {len(results)}")
+
+    if not results:
+        logger.warning("Aucune recette trouvée pour les IDs: %s", ids)
+        raise RecipeNotFoundException(f"Aucune recette trouvée pour les IDs {ids}")
+    
+    logger.info("Recettes trouvées : %d", len(results))
     return results
 
 def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -64,13 +99,14 @@ def group_steps_by_category_action(recipes: List[Dict[str, Any]]) -> Dict[str, A
                     continue
                 try:
                     action_category = pattern["action"]["category_action"]
-                    print("action_category:", action_category, type(action_category))
-                    if action_category in MUTUALIZED_ACTIONS:
-                        mutualized_steps_by_category[action_category].append(step_text)
-                        is_mutualized = True
-                        break
-                except KeyError:
-                    continue
+                except KeyError as e:
+                    logger.error("Pattern mal formé dans la recette '%s': %s", recipe.get("title", "inconnue"), pattern)
+                    raise InvalidStepPatternException(f"Pattern invalide : {pattern}") from e
+
+                if action_category in MUTUALIZED_ACTIONS:
+                    mutualized_steps_by_category[action_category].append(step_text)
+                    is_mutualized = True
+                    break
 
             if not is_mutualized:
                 individual_steps.append(step_text)
@@ -104,6 +140,11 @@ def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str,
             try:
                 quantity = float(ing['quantity'])
             except (ValueError, TypeError):
+                logger.warning(
+                    "Quantité invalide pour l'ingrédient '%s' dans la recette '%s'. Affectation à 0.",
+                    key,
+                    recipe.get("title", "inconnue")
+                )
                 quantity = 0
             shopping_list[key]['quantity'] += quantity
             shopping_list[key]['unit'] = ing['unit']
@@ -113,19 +154,19 @@ def generate_shopping_list(recipes: List[Dict[str, Any]]) -> Dict[str, Dict[str,
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python BatchCookingProcessor.py id1,id2,id3,...")
+        logger.error("Usage incorrect: python batch_cooking_processing.py id1,id2,id3,...")
         sys.exit(1)
 
     try:
         ids = list(map(int, sys.argv[1].split(',')))
     except ValueError:
-        print("Erreur: les IDs doivent être des entiers séparés par des virgules.")
-        sys.exit(1)
+        logger.error("Les IDs doivent être des entiers séparés par des virgules: %s", sys.argv[1])
+        raise InvalidRecipeIdException("IDs non valides fournis") 
 
     recipes = get_recipes_by_ids(ids)
     if not recipes:
-        print("Aucune recette trouvée.")
-        sys.exit(1)
+        logger.warning("Aucune recette trouvée pour les IDs fournis: %s", ids)
+        raise RecipeNotFoundException(f"Aucune recette trouvée pour les IDs {ids}")
 
 if __name__ == "__main__":
     main()

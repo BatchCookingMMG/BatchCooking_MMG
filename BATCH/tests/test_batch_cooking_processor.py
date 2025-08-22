@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from batch.BatchCookingProcessor import get_recipes_by_ids, group_steps_by_category_action
+from batch.batch_cooking_processor import get_recipes_by_ids, group_steps_by_category_action
 
 class TestBatchCookingProcessor(unittest.TestCase):
 
