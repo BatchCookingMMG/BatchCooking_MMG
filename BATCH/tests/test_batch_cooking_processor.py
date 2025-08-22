@@ -4,7 +4,7 @@ from batch.batch_cooking_processor import get_recipes_by_ids, group_steps_by_cat
 
 class TestBatchCookingProcessor(unittest.TestCase):
 
-    @patch('batch.BatchCookingProcessor.get_collection')
+    @patch('batch.batch_cooking_processor.get_collection')
     def test_get_recipes_by_ids(self, mock_get_collection):
         # Création d’un faux objet collection
         mock_collection = MagicMock()

@@ -9,7 +9,7 @@ from typing import List, Dict, Any
 from pymongo import MongoClient
 from dotenv import load_dotenv
 
-from backend_log_handler import get_logger
+from .backend_log_handler import get_logger
 from exceptions import (
     BatchCookingException,
     MongoConnectionException,
