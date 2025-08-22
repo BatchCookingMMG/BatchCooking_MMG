@@ -10,7 +10,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 
 from .backend_log_handler import get_logger
-from exceptions import (
+from .exceptions import (
     BatchCookingException,
     MongoConnectionException,
     InvalidRecipeIdException,
