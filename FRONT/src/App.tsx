@@ -11,7 +11,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {/* Route dédiée pour login, sans layout */}
+          {/* TODO : Route dédiée pour login, sans layout, à revoir si on passe en mode popin */}
           <Route path="/login" element={<LoginForm />} />
           <Route path="/register" element={<RegisterForm />} />
           {/* Routes avec layout principal */}

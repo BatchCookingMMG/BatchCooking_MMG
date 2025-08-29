@@ -20,7 +20,7 @@ export default function Header() {
         <img src="/images/logo.png" alt="Logo" className="h-25 w-auto" />
       </Link>
 
-      {/* Filtres : cachés sur mobile, visibles à partir de md */}
+      {/* TODO : est-ce que les filtres ont leur place dans le header ? */}
       <nav className="hidden md:flex gap-4">
         <button className="text-sm font-medium">Végétarien</button>
         <button className="text-sm font-medium">Sans Porc</button>

@@ -55,10 +55,10 @@ public class SpringSecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // pas de session, on utilise JWT
                 .authorizeHttpRequests(auth -> auth
-                                // Pour l'instant, on autorise tout, sans authentification
+                                // TODO: pour l'instant, on autorise tout, sans authentification
                                 .anyRequest().permitAll()
 
-                        // Quand tu voudras sécuriser, remplace par exemple par :
+                        // TODO: Quand on voudra sécuriser, remplacer par exemple par :
                         // .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
                         // .anyRequest().authenticated()
                 )

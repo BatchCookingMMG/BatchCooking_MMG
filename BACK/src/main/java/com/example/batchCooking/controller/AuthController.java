@@ -47,14 +47,14 @@ public class AuthController {
                     )
             );
 
-            // Récupérer l'utilisateur authentifié
+            // Récupération de l'utilisateur authentifié
             User user = userService.findByEmail(loginRequest.getEmail())
                     .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-            // Générer le token JWT
+            // Génération du token JWT
             String token = tokenProvider.generateToken(loginRequest.getEmail());
 
-            // Créer la réponse avec token et infos utilisateur
+            // Création de la réponse avec token et infos utilisateur
             LoginResponseDTO response = new LoginResponseDTO(token, user);
 
             return ResponseEntity.ok(response);
@@ -71,7 +71,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterRequestDTO registerRequest) {
 
-        // Vérifier si les mots de passe correspondent
+        // Vérification si les mots de passe correspondent
         if (!registerRequest.isPasswordMatching()) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("message", "Les mots de passe ne correspondent pas");
@@ -81,7 +81,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        // Vérifier si l'email existe déjà
+        // Vérification si l'email existe déjà
         if (userService.findByEmail(registerRequest.getEmail()).isPresent()) {
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("message", "Email déjà utilisé");
@@ -92,17 +92,17 @@ public class AuthController {
         }
 
         try {
-            // Créer et sauvegarder le nouvel utilisateur
+            // Création et sauvegarde du nouvel utilisateur
             User user = new User();
             user.setEmail(registerRequest.getEmail());
             user.setPassword(registerRequest.getPassword()); // sera encodé dans userService.save()
 
             User savedUser = userService.save(user);
 
-            // Générer un token pour l'utilisateur nouvellement créé
+            // Génération d'un token pour l'utilisateur nouvellement créé
             String token = tokenProvider.generateToken(savedUser.getEmail());
 
-            // Retourner la réponse avec token et infos utilisateur
+            // Réponse avec token et infos utilisateur
             LoginResponseDTO response = new LoginResponseDTO(token, savedUser);
 
             Map<String, Object> successResponse = new HashMap<>();
@@ -128,7 +128,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Non authentifié");
         }
 
-        // Ici on suppose que principal est le nom de l'utilisateur (email)
         String email = authentication.getName();
 
         User user = userService.findByEmail(email)
@@ -140,6 +139,5 @@ public class AuthController {
 
         return ResponseEntity.ok(user);
     }
-
 
 }
