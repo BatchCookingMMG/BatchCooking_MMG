@@ -49,7 +49,6 @@ public class JwtTokenProvider {
             Jwts.parser().verifyWith(key).build().parseSignedClaims(authToken);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            // Log or handle token parsing exceptions here if needed
             return false;
         }
     }

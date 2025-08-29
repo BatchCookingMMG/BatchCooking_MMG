@@ -21,6 +21,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <form
+          role="form"
           onSubmit={handleSubmit}
           className="bg-white p-8 rounded-lg shadow-md border border-gray-200"
         >
@@ -50,7 +51,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D3803C] focus:border-transparent transition-colors"
                 required
                 autoComplete="username"
                 placeholder="votre.email@exemple.com"
@@ -69,7 +70,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
                 type="password"
                 value={password}
                 onChange={handlePasswordChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#D3803C] focus:border-transparent transition-colors"
                 required
                 autoComplete="current-password"
                 placeholder="••••••••"
@@ -80,10 +81,10 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full mt-6 py-2 px-4 rounded-md font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+            className={`w-full mt-6 py-2 px-4 rounded-md font-medium text-white transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#D3803C] ${
               loading
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
+                : "bg-[#D3803C] hover:bg-[#B36E2F] active:bg-[#995c25]"
             }`}
             aria-label={loading ? "Connexion en cours..." : "Se connecter"}
           >
@@ -96,7 +97,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             </p>
             <Link
               to="/register"
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium hover:underline transition-colors"
+              className="text-[#D3803C] hover:text-[#B36E2F] text-sm font-medium hover:underline transition-colors"
             >
               S'inscrire
             </Link>

@@ -19,17 +19,17 @@ public class UserAuthenticationService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    // Cette méthode est appelée par Spring Security lors de la connexion
+    // Méthode appelée par Spring Security lors de la connexion
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // On cherche l'utilisateur dans la base avec l'email
+        // Recherche de l'utilisateur dans la base avec l'email
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé avec email : " + email));
 
-        // On retourne un objet UserDetails que Spring Security va utiliser
+        // Retourne un objet UserDetails que Spring Security va utiliser
         return org.springframework.security.core.userdetails.User.withUsername(user.getEmail())
                 .password(user.getPassword())
-                .authorities(Collections.emptyList()) // pas de rôles pour l'instant, on peut ajouter plus tard
-                .build();
+                .authorities(Collections.emptyList()) // TODO : pour l'instant pas de rôles, à ajouter plus tard ?
+                 .build();
     }
 }

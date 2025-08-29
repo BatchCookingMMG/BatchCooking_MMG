@@ -1,22 +1,23 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/users";
+import { CircleUserRound } from "lucide-react";
 
 export default function ProfileButton() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleProfileClick = () => {
     if (user) {
       navigate("/account");
     } else {
-      navigate("/login");
+      navigate("/login", { state: { from: location.pathname } });
     }
   };
 
   const handleLogoutClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     logout();
-    navigate("/");
   };
 
   return (
@@ -24,14 +25,11 @@ export default function ProfileButton() {
       onClick={handleProfileClick}
       className="flex flex-col items-center hover:opacity-80 transition-opacity"
     >
-      <img
-        src={
-          user
-            ? "/images/connected-profile.png"
-            : "/images/not-connected-profile.png"
-        }
-        alt={user ? "Mon compte" : "Se connecter"}
-        className="h-10 w-auto md:h-15 md:w-auto object-contain rounded-full"
+      <CircleUserRound
+        size={40}
+        className={`transition-colors duration-300 ${
+          user ? "text-[#B0B18C]" : "text-[#EDC59D]"
+        }`}
       />
       {user ? (
         <span
@@ -41,7 +39,9 @@ export default function ProfileButton() {
           Se déconnecter
         </span>
       ) : (
-        <span className="text-xs text-gray-600 mt-1">Se connecter</span>
+        <span className="text-xs text-gray-600 mt-1 cursor-pointer hover:underline">
+          Se connecter
+        </span>
       )}
     </button>
   );
