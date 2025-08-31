@@ -27,8 +27,8 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
-      #- name: Run tests
-      #  run: npm test
+      - name: Run tests
+        run: npm test
 
       #- name: Build & push Docker image
       #  run: |
@@ -51,10 +51,19 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: "21"
+          distribution: "temurin"
 
-      - run: mvn clean install
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build backend and run tests
+        run: mvn clean test -Dspring.profiles.active=test -DforkCount=1 -DreuseForks=false
 
       #- name: Build & push Docker image
       #  run: |
