@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
-from BatchCookingProcessor import get_recipes_by_ids, group_steps_by_category_action, generate_shopping_list
+from batch.batch_cooking_processor import get_recipes_by_ids, group_steps_by_category_action, generate_shopping_list
 
 app = Flask(__name__)
 
