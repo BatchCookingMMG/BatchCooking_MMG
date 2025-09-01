@@ -1,9 +1,12 @@
 import { BatchResponseDTO } from '../types/BatchTypes';
+import { logInfo, logWarn, logError } from "../../../core/logging/logger";
+
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const fetchBatch = async (recipeIds: number[]): Promise<BatchResponseDTO> => {
-    console.log('fetchBatch appelé avec :', recipeIds);
+    logInfo(`Appel API /api/batch/generate avec ${recipeIds.length} recettes`);
+
     try {
         const response = await fetch(`${API_URL}/api/batch/generate`, {
             method: 'POST',
@@ -14,13 +17,16 @@ export const fetchBatch = async (recipeIds: number[]): Promise<BatchResponseDTO>
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error ${response.status}: ${response.statusText}`);
+            const errorText = await response.text();
+            await logWarn(`Réponse non OK du back : ${response.status} - ${errorText}`);
+            throw new Error(`Erreur backend (${response.status})`);
         }
 
         const data: BatchResponseDTO = await response.json();
+        logInfo(`Batch généré avec succès : ${JSON.stringify(data)}`);
         return data;
     } catch (error) {
-        console.error('Erreur dans fetchBatch :', error);
+        await logError("Erreur lors de l’appel à /api/batch/generate", error as Error);
         throw error;
     }
 };
