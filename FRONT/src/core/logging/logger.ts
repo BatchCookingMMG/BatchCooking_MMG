@@ -8,7 +8,8 @@ export async function logToBack(level: "INFO" | "WARN" | "ERROR", message: strin
     };
 
     try {
-        await fetch("/api/logs", {
+        const API_URL = import.meta.env.VITE_API_URL;
+        await fetch(`${API_URL}/api/logs/event`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -17,8 +18,9 @@ export async function logToBack(level: "INFO" | "WARN" | "ERROR", message: strin
         console.warn("Impossible d'envoyer le log au back");
     }
 }
-export async function logInfo(message: string) {
-    return logToBack("INFO", message);
+export async function logInfo(message: string, context?: string) {
+    const fullMessage = context ? `[${context}] ${message}` : message;
+    await logToBack("INFO", fullMessage);
 }
 
 export async function logWarn(message: string, error?: Error) {

@@ -23,7 +23,7 @@ export const fetchBatch = async (recipeIds: number[]): Promise<BatchResponseDTO>
         }
 
         const data: BatchResponseDTO = await response.json();
-        logInfo(`Batch généré avec succès : ${JSON.stringify(data)}`);
+        logInfo(`Batch généré avec succès pour les recettes : ${JSON.stringify({ recipeIds })}`);
         return data;
     } catch (error) {
         await logError("Erreur lors de l’appel à /api/batch/generate", error as Error);

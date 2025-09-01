@@ -4,9 +4,15 @@ import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import { RecipeDetailPage, FilteredRecipesPage } from "@/pages";
 import ErrorBoundary from "./core/logging/errorBoundary";
+import { logInfo } from "./core/logging/logger";
 import BatchPage from "./pages/BatchPage";
 
+
 function App() {
+  React.useEffect(() => {
+    logInfo("Test log front OK", "App.tsx");
+  }, []);
+
   return (
     <Router>
       <ErrorBoundary fallback={<p>Une erreur inattendue est survenue.</p>}>
