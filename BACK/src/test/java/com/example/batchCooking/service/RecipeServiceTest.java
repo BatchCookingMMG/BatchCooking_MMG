@@ -6,7 +6,6 @@ import com.example.batchCooking.model.DifficultyEnum;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.repository.RecipeRepository;
 import com.example.batchCooking.repository.RecipeRepositoryCustom;
-import com.example.batchCooking.service.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +35,7 @@ public class RecipeServiceTest {
     void testGetRandomNRecipes_withAllFilters() {
         // given
         RecipeSummaryDTO dto = new RecipeSummaryDTO(
-                123, "vegetarien", "hachis parmentier", "30 min", "Facile"
-        );
+                123, "vegetarien", "hachis parmentier", "30 min", "Facile", "https://example.com/curry.jpg");
 
         when(recipeRepositoryCustom.findFilteredRandomRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN))
                 .thenReturn(List.of(dto));
@@ -48,6 +46,7 @@ public class RecipeServiceTest {
         // then
         assertEquals(1, result.size());
         assertEquals("hachis parmentier", result.get(0).getTitle());
+        assertEquals("https://example.com/curry.jpg", result.get(0).getImageUrl());
         verify(recipeRepositoryCustom, times(1))
                 .findFilteredRandomRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN);
     }

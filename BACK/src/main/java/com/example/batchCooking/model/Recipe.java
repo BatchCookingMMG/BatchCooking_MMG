@@ -17,6 +17,7 @@ public class Recipe {
     private Integer people_number;
     private List<Ingredient> ingredients;
     private List<Step> steps;
+    private String imageUrl;
 
     // Getters et Setters
     public Integer getId() {
@@ -90,6 +91,9 @@ public class Recipe {
     public void setSteps(List<Step> steps) {
         this.steps = steps;
     }
+
+    public String getImageUrl() { return imageUrl; }
+    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
 
     public void setName(String recipeA) {
     }

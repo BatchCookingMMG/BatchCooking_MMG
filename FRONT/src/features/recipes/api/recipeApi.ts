@@ -1,9 +1,80 @@
 import { convertKeysToCamel } from "../../../utils/caseConverter";
-import { Recipe } from '@/features/recipes/types/recipeTypes';
+import { Recipe, Ingredient, Step } from '@/features/recipes/types/recipeTypes';
 import { logInfo, logWarn, logError } from "../../../core/logging/logger";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+/* -------------------------------------------------------------------------- */
+/*                               KEY MAPPERS                                   */
+/* -------------------------------------------------------------------------- */
+/**
+ * mapRecipeDetail:
+ * - Used for the detail endpoint (/api/recipes/id/:id) returning a FULL recipe.
+ */
+function mapRecipeDetail(dto: any): Recipe {
+  const c = convertKeysToCamel<any>(dto);
+  // Normalize nested arrays/objects
+  const ingredients: Ingredient[] = Array.isArray(c.ingredients)
+    ? c.ingredients.map((ing: any) => ({
+        quantity: ing.quantity ?? null,
+        unit: ing.unit ?? "",
+        ingredient: ing.ingredient ?? "",
+        category: ing.category ?? "",
+      }))
+    : [];
+
+  const steps: Step[] = Array.isArray(c.steps)
+    ? c.steps.map((s: any) => ({ text: s.text ?? "" }))
+    : [];
+
+  // Return a fully shaped Recipe
+  return {
+    id: Number(c.id),
+    title: c.title ?? "",
+    tag: c.tag ?? "",
+    preparationTime: c.preparationTime ?? "",
+    difficulty: c.difficulty ?? "",
+    cost: c.cost ?? "",
+    peopleNumber: Number(c.peopleNumber ?? 0),
+    ingredients,
+    steps,
+    image: c.imageUrl ?? null, // <— key bridge: backend imageUrl -> frontend image
+  };
+}
+
+/**
+ * mapRecipeSummary:
+ * - Used for list/random endpoints (cards).
+ * - Backend only returns a summary here.
+ * - We fill missing fields with defaults so your Recipe type remains satisfied
+ *   (this avoids touching UI components right now).
+ */
+function mapRecipeSummary(dto: any): Recipe {
+  const c = convertKeysToCamel<any>(dto);
+
+  return {
+    id: Number(c.id),
+    title: c.title ?? "",
+    tag: c.tag ?? "",
+    preparationTime: c.preparationTime ?? "",
+    difficulty: c.difficulty ?? "",
+    // defaults for fields not returned by /random
+    cost: "",
+    peopleNumber: 0,
+    ingredients: [],
+    steps: [],
+    image: c.imageUrl ?? null, // <— same bridge for cards
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               API CALLS                                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Fetch recipe details (detail page)
+ * GET /api/recipes/id/:id
+ */
 export const fetchRecipeById = async (id: number): Promise<Recipe> => {
   logInfo(`Appel API fetchRecipeById avec id=${id}`);
 
@@ -16,10 +87,9 @@ export const fetchRecipeById = async (id: number): Promise<Recipe> => {
       throw new Error(errorMsg);
     }
 
-    const rawData: Recipe = await response.json();
-    const data: Recipe = convertKeysToCamel<Recipe>(rawData);
+    const raw = await response.json();
     logInfo(`Recette récupérée avec succès pour id=${id}`);
-    return data;
+    return mapRecipeDetail(raw);
 
   } catch (error) {
     logError(`Erreur lors de fetchRecipeById id=${id}`, error as Error);
@@ -27,7 +97,13 @@ export const fetchRecipeById = async (id: number): Promise<Recipe> => {
   }
 };
 
-// ✔ Récupérer des recettes filtrées (notamment pour FilteredRecipesPage)
+/**
+ * Fetch filtered recipes (cards / FilteredRecipesPage)
+ * GET /api/recipes/random?recipesNumber=...&vegetarien=...&sansPorc=...&difficulty=...
+ *
+ * Note: we return Recipe[] to keep your current UI unchanged,
+ *       but only "summary" fields are populated for this endpoint.
+ */
 export const fetchFilteredRecipes = async (filters: {
   recipesNumber: number;
   vegetarien?: boolean;
@@ -50,8 +126,8 @@ export const fetchFilteredRecipes = async (filters: {
       throw new Error(errorMsg);
     }
 
-    const rawData = await response.json();
-    const data = convertKeysToCamel<Recipe[]>(rawData);
+    const raw = await response.json();
+    const data = Array.isArray(raw) ? raw.map(mapRecipeSummary) : [];
     logInfo(`Recettes filtrées récupérées : ${data.length} recette(s)`);
     return data;
 
@@ -61,7 +137,10 @@ export const fetchFilteredRecipes = async (filters: {
   }
 };
 
-// ✅ Pour remplacer UNE recette aléatoire avec les mêmes filtres
+/**
+ * Fetch ONE random recipe (to replace a single card)
+ * GET /api/recipes/random?recipesNumber=1&...
+ */
 export const fetchOneFilteredRecipe = async (filters: {
   vegetarien?: boolean;
   sansPorc?: boolean;
@@ -83,10 +162,11 @@ export const fetchOneFilteredRecipe = async (filters: {
       throw new Error(errorMsg);
     }
 
-    const rawData = await response.json();
-    const recipe = convertKeysToCamel<Recipe[]>(rawData)[0];
-    logInfo(`Recette unique récupérée : ${recipe?.title ?? "aucune"}`);
-    return recipe;
+    const raw = await response.json();
+    const first = Array.isArray(raw) ? raw[0] : undefined;
+    if (!first) throw new Error("No recipe returned");
+    
+    return mapRecipeSummary(first)
 
   } catch (error) {
     logError(`Erreur lors de fetchOneFilteredRecipe avec filtres=${JSON.stringify(filters)}`, error as Error);
