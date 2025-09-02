@@ -1,13 +1,12 @@
 package com.example.batchCooking.controller;
 
+import com.example.batchCooking.dto.LogEventDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.Files;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -15,36 +14,38 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @RequestMapping("/api/logs")
 public class LogController {
 
-    // Thread-safe pour stockage temporaire
+    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
     private final List<String> logs = new CopyOnWriteArrayList<>();
 
+    /**
+     * Réception d’un log depuis front, back ou batch
+     */
     @PostMapping("/event")
-    public ResponseEntity<String> receiveLog(@RequestBody LogEvent logEvent) {
-        // logEvent.message et logEvent.level
-        String formatted = String.format("[%s] %s", logEvent.getLevel().toUpperCase(), logEvent.getMessage());
+    public ResponseEntity<String> receiveLog(@RequestBody LogEventDTO logEventDTO) {
+
+        String formatted = String.format(
+                "[%s] [%s] %s (context=%s, stack=%s)",
+                logEventDTO.level().toUpperCase(),
+                logEventDTO.source(),
+                logEventDTO.message(),
+                logEventDTO.context() != null ? logEventDTO.context() : "N/A",
+                logEventDTO.stackTrace() != null ? logEventDTO.stackTrace() : "N/A");
+
         logs.add(formatted);
 
-        // Tu peux aussi écrire dans un fichier ou DB ici
-        System.out.println(formatted);
+        switch (logEventDTO.level().toUpperCase()) {
+            case "ERROR" -> logger.error(formatted);
+            case "WARN"  -> logger.warn(formatted);
+            default      -> logger.info(formatted);
+        }
 
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+        return new ResponseEntity<>("Log reçu", HttpStatus.OK);
     }
 
     @GetMapping
     public List<String> getRecentLogs(@RequestParam(defaultValue = "100") int last) {
         int start = Math.max(0, logs.size() - last);
         return logs.subList(start, logs.size());
-    }
-
-    // DTO pour recevoir le JSON
-    public static class LogEvent {
-        private String message;
-        private String level;
-
-        public String getMessage() { return message; }
-        public void setMessage(String message) { this.message = message; }
-        public String getLevel() { return level; }
-        public void setLevel(String level) { this.level = level; }
     }
 }
 
