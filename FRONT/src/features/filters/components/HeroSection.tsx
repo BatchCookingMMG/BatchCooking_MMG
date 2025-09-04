@@ -1,7 +1,7 @@
 // src/features/filters/components/HeroSection.tsx
 
 import FilterForm from "@/features/filters/FilterForm";
-import heroImg from "/images/hero-batch.jpg"; // adapte le chemin à ton image
+import heroImg from "/images/hero-batch.jpg"; 
 
 export default function HeroSection() {
   return (
