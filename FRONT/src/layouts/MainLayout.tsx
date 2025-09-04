@@ -1,6 +1,6 @@
 // src/layouts/MainLayout.tsx
 import Header from './Header';
-
+import Footer from './Footer';
 import { Outlet } from 'react-router-dom';
 
 export default function MainLayout() {
@@ -10,7 +10,7 @@ export default function MainLayout() {
       <main className="flex-1 p-4">
         <Outlet />
       </main>
-      
+    <Footer />
     </div>
   );
 }

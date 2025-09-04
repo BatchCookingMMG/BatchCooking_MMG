@@ -1,1 +1,4 @@
 @import "tailwindcss";
+
+:root{ --safe: env(safe-area-inset-bottom) }
+.no-tap-highlight { -webkit-tap-highlight-color: transparent }
