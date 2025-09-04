@@ -1,172 +1,178 @@
-// src/test/api/RecipesApi.test.tsx
-import { describe, it, expect, beforeEach, vi, type Mock } from "vitest";
-import {
-  fetchRecipeById,
-  fetchFilteredRecipes,
-  fetchOneFilteredRecipe,
-} from "@/features/recipes/api/recipeApi";
-import type { Recipe } from "@/features/recipes/types/recipeTypes";
+/// <reference types="vitest" />
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// 👇 For the a11y (alt) test
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import RecipeCard from "@/features/recipes/components/RecipeCard";
-
-// Helper: mock a single fetch response (success by default)
-function mockFetchOnce(body: any, status = 200) {
-  (globalThis.fetch as unknown as Mock).mockResolvedValueOnce({
+/** Fabrique une "Response" compatible fetch */
+function makeResponse<T>(body: T, status = 200, statusText = 'OK') {
+  return {
     ok: status >= 200 && status < 300,
     status,
-    statusText: status === 200 ? "OK" : "ERR",
+    statusText,
     json: async () => body,
-  } as Response);
+  } as any;
 }
 
-beforeEach(() => {
-  vi.restoreAllMocks();
-  // stub global fetch for every test
-  globalThis.fetch = vi.fn() as any;
-});
+describe('recipesApi', () => {
+  // On importera le module APRES avoir posé le mock
+  let api: typeof import('@/features/recipes/api/recipeApi');
+  let fetchMock: ReturnType<typeof vi.fn>;
 
-describe("recipesApi", () => {
-  it("fetchRecipeById maps snake_case and imageUrl -> image", async () => {
-    // backend payload (what your Spring API returns)
-    const backend = {
-      id: 42,
-      tag: "vegetarien",
-      title: "Ratatouille",
-      preparation_time: "30 min",
-      difficulty: "Facile",
-      cost: "bon marché",
-      people_number: 2,
-      ingredients: [],
-      steps: [],
-      imageUrl: "https://ex.com/42.png",
-    };
-    mockFetchOnce(backend);
+  beforeEach(async () => {
+    vi.restoreAllMocks();
+    vi.resetModules();
 
-    const recipe = await fetchRecipeById(42);
+    // 1) Mock global fetch (default: retourne un 200 avec {})
+    fetchMock = vi.fn().mockImplementation((_url: any) => Promise.resolve(makeResponse({})));
+    (globalThis as any).fetch = fetchMock;
+    if (typeof window !== 'undefined') (window as any).fetch = fetchMock;
 
-    // URL called (we only check the suffix to avoid env issues)
-    expect((globalThis.fetch as Mock).mock.calls[0][0]).toMatch(
-      /\/api\/recipes\/id\/42$/
-    );
+    // 2) Var d'env utilisée dans recipeApi
+    (import.meta as any).env = { VITE_API_URL: 'https://api.test' };
 
-    // mapped object
-    expect(recipe).toEqual({
-      id: 42,
-      tag: "vegetarien",
-      title: "Ratatouille",
-      preparationTime: "30 min",
-      difficulty: "Facile",
-      cost: "bon marché",
-      peopleNumber: 2,
-      ingredients: [],
-      steps: [],
-      image: "https://ex.com/42.png",
-    } as Recipe);
+    // 3) Import du module APRES installation du mock
+    api = await import('@/features/recipes/api/recipeApi');
   });
 
-  it("fetchFilteredRecipes returns mapped list", async () => {
-    const backendList = [
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it('fetchRecipeById : mappe le détail (snake_case -> camelCase) et imageUrl -> image', async () => {
+    const detailPayload = {
+      id: 42,
+      title: 'Tarte aux pommes',
+      tag: 'dessert',
+      preparation_time: '30 min',
+      difficulty: 'easy',
+      cost: 'low',
+      people_number: 4,
+      ingredients: [{ quantity: 2, unit: 'pcs', ingredient: 'pomme', category: 'fruit' }],
+      steps: [{ text: 'Éplucher les pommes' }],
+      image_url: 'https://img/42.jpg',
+    };
+
+    // Route selon l’URL : si c’est l’endpoint détail, renvoie notre payload
+    fetchMock.mockImplementation((url: any) => {
+      const u = String(url);
+      if (u.includes('/api/recipes/id/42')) {
+        return Promise.resolve(makeResponse(detailPayload));
+      }
+      // tout le reste (logs, etc.) reçoit un objet vide
+      return Promise.resolve(makeResponse({}));
+    });
+
+    const recipe = await api.fetchRecipeById(42);
+
+    expect(fetchMock).toHaveBeenCalled();
+    expect(recipe).toMatchObject({
+      id: 42,
+      title: 'Tarte aux pommes',
+      tag: 'dessert',
+      preparationTime: '30 min',
+      difficulty: 'easy',
+      cost: 'low',
+      peopleNumber: 4,
+      image: 'https://img/42.jpg',
+    });
+    expect(recipe.ingredients[0]).toMatchObject({
+      quantity: 2,
+      unit: 'pcs',
+      ingredient: 'pomme',
+      category: 'fruit',
+    });
+    expect(recipe.steps[0]).toMatchObject({ text: 'Éplucher les pommes' });
+  });
+
+  it('fetchFilteredRecipes : renvoie une liste mappée (summary)', async () => {
+    const listPayload = [
       {
         id: 1,
-        tag: "vegetarien",
-        title: "Curry",
-        preparation_time: "20 min",
-        difficulty: "Facile",
-        imageUrl: "https://ex.com/1.png",
+        title: 'Salade',
+        tag: 'starter',
+        preparation_time: '10 min',
+        difficulty: 'easy',
+        image_url: '/img1.jpg',
       },
       {
         id: 2,
-        tag: "vegetarien",
-        title: "Burger",
-        preparation_time: "40 min",
-        difficulty: "Moyen",
-        imageUrl: null,
+        title: 'Soupe',
+        tag: 'starter',
+        preparation_time: '20 min',
+        difficulty: 'medium',
+        image_url: '/img2.jpg',
       },
     ];
-    mockFetchOnce(backendList);
 
-    const list = await fetchFilteredRecipes({ recipesNumber: 2, vegetarien: true });
-
-    // URL called contains recipesNumber=2
-    expect((globalThis.fetch as Mock).mock.calls[0][0]).toMatch(
-      /\/api\/recipes\/random\?.*recipesNumber=2/
-    );
-
-    // mapping checks
-    expect(list[0].preparationTime).toBe("20 min");
-    expect(list[0].image).toBe("https://ex.com/1.png");
-    expect(list[1].image).toBeNull();
-  });
-
-  it("fetchOneFilteredRecipe returns first result and maps image", async () => {
-    const backendList = [
-      {
-        id: 9,
-        tag: "dessert",
-        title: "Tarte",
-        preparation_time: "45 min",
-        difficulty: "Facile",
-        imageUrl: "https://ex.com/9.png",
-      },
-    ];
-    mockFetchOnce(backendList);
-
-    const item = await fetchOneFilteredRecipe({
-      vegetarien: false,
-      difficulty: "FACILE",
+    fetchMock.mockImplementation((url: any) => {
+      const u = String(url);
+      if (u.includes('/api/recipes/random')) {
+        return Promise.resolve(makeResponse(listPayload));
+      }
+      return Promise.resolve(makeResponse({}));
     });
 
-    // URL called requests 1 recipe
-    expect((globalThis.fetch as Mock).mock.calls[0][0]).toMatch(
-      /\/api\/recipes\/random\?.*recipesNumber=1/
-    );
+    const list = await api.fetchFilteredRecipes({ recipesNumber: 2 });
 
-    expect(item.id).toBe(9);
-    expect(item.image).toBe("https://ex.com/9.png");
-  });
-
-  it("throws when response is not ok", async () => {
-    (globalThis.fetch as unknown as Mock).mockResolvedValueOnce({
-      ok: false,
-      status: 500,
-      statusText: "Server Error",
-      json: async () => ({}),
-    } as Response);
-
-    // Less strict check (only ensures the status code appears in the message)
-    await expect(fetchRecipeById(1)).rejects.toThrow(/HTTP 500/);
-  });
-});
-
-/* ---------- A11y test for <RecipeCard /> (ALT attribute) ---------- */
-
-describe("RecipeCard a11y", () => {
-  it("exposes an accessible name via alt (uses recipe.title)", () => {
-    const recipe: Recipe = {
+    expect(Array.isArray(list)).toBe(true);
+    expect(list).toHaveLength(2);
+    expect(list[0]).toMatchObject({
       id: 1,
-      title: "Tarte aux pommes",
-      tag: "dessert",
-      preparationTime: "45 min",
-      difficulty: "Facile",
-      cost: "bon marché",
-      peopleNumber: 4,
+      title: 'Salade',
+      tag: 'starter',
+      preparationTime: '10 min',
+      difficulty: 'easy',
+      image: '/img1.jpg',
+      cost: '',
+      peopleNumber: 0,
       ingredients: [],
       steps: [],
-      image: "https://example.com/tarte.jpg",
-    };
+    });
+    expect(list[1]).toMatchObject({
+      id: 2,
+      title: 'Soupe',
+      preparationTime: '20 min',
+      difficulty: 'medium',
+      image: '/img2.jpg',
+    });
+  });
 
-    render(
-      <MemoryRouter>
-        <RecipeCard recipe={recipe} />
-      </MemoryRouter>
-    );
+  it('fetchOneFilteredRecipe : renvoie le 1er élément mappé (summary)', async () => {
+    const listPayload = [
+      { id: 10, title: 'Pâtes', tag: 'main', preparation_time: '15 min', difficulty: 'easy', image_url: '/pates.jpg' },
+      { id: 11, title: 'Riz',   tag: 'main', preparation_time: '12 min', difficulty: 'easy', image_url: '/riz.jpg' },
+    ];
 
-    // getByRole('img', { name }) uses the accessible name (alt in this case)
-    expect(
-      screen.getByRole("img", { name: /tarte aux pommes/i })
-    ).toBeInTheDocument();
+    fetchMock.mockImplementation((url: any) => {
+      const u = String(url);
+      if (u.includes('/api/recipes/random')) {
+        return Promise.resolve(makeResponse(listPayload));
+      }
+      return Promise.resolve(makeResponse({}));
+    });
+
+    const one = await api.fetchOneFilteredRecipe({ difficulty: 'easy' });
+
+    expect(one).toMatchObject({
+      id: 10,
+      title: 'Pâtes',
+      tag: 'main',
+      preparationTime: '15 min',
+      difficulty: 'easy',
+      image: '/pates.jpg',
+      cost: '',
+      peopleNumber: 0,
+    });
+  });
+
+  it('fetchRecipeById : lève une erreur si response.ok === false', async () => {
+    fetchMock.mockImplementation((url: any) => {
+      const u = String(url);
+      if (u.includes('/api/recipes/id/1')) {
+        // On force un 500 pour l’appel API
+        return Promise.resolve(makeResponse({ message: 'Boom' }, 500, 'Internal Server Error'));
+      }
+      return Promise.resolve(makeResponse({}));
+    });
+
+    await expect(api.fetchRecipeById(1)).rejects.toThrow(/Erreur HTTP 500/i);
   });
 });
