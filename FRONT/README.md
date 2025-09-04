@@ -1,46 +1,105 @@
-# Getting Started with Create React App
+# BatchCooking MMG
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Meal prep planner and batch cooking manager: web front‑end, back‑end API, and batch jobs.
 
-## Available Scripts
+* **Repo**: [https://github.com/BatchCookingMMG/BatchCooking\_MMG](https://github.com/BatchCookingMMG/BatchCooking_MMG)
+* **Modules**:
 
-In the project directory, you can run:
+  * [Front](https://github.com/BatchCookingMMG/BatchCooking_MMG/tree/dev/FRONT) – React + TypeScript (Vite)
+  * [Back](https://github.com/BatchCookingMMG/BatchCooking_MMG/tree/dev/BACK) – Java (Spring Boot)
+  * [Batch](https://github.com/BatchCookingMMG/BatchCooking_MMG/tree/dev/BATCH) – Python scripts
 
-### `npm start`
+## Architecture
 
-Runs the app in the development mode.\
-Open [http://localhost:5173](http://localhost:5173) to view it in the browser.
+```
+BatchCooking_MMG/
+├─ BACK/   # API and business logic
+├─ FRONT/  # Web app
+├─ BATCH/  # Batch scripts
+├─ docker-compose.yml
+└─ README.md
+```
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Requirements
 
-### `npm test`
+* **Docker** (recommended)
+* Or manually:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  * Node.js ≥ 18 for FRONT
+  * JDK ≥ 17 + Maven for BACK
+  * Python ≥ 3.11 for BATCH
 
-### `npm run build`
+## Quick Start (Docker)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+docker compose up --build
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Front: [http://localhost:5173](http://localhost:5173)
+* API: [http://localhost:8080](http://localhost:8080)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Manual Start
 
-### `npm run eject`
+### Front
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```bash
+cd FRONT
+npm install
+npm run dev
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Back
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+cd BACK
+./mvnw spring-boot:run
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Batch
 
-## Learn More
+```bash
+cd BATCH
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/<your_script>.py
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Environment Variables
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* **Front (`FRONT/.env`)**
+
+  ```
+  VITE_API_URL=http://localhost:8080
+  ```
+* **Back (`BACK/.env` or app config)**
+
+  ```
+  SERVER_PORT=8080
+  SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/batchcooking
+  ```
+* **Batch (`BATCH/.env`)**
+
+  ```
+  API_BASE_URL=http://localhost:8080
+  ```
+
+## Scripts
+
+* **Front**: `npm run dev`, `npm run build`, `npm test`
+* **Back**: `mvn spring-boot:run`, `mvn test`
+* **Batch**: run scripts in `scripts/`, use `pytest` for tests
+
+## CI
+
+This repository uses **GitHub Actions** for Continuous Integration.
+
+Current pipeline runs:
+
+* **Front**: install, lint, build, and run tests (Node.js)
+* **Back**: build and run tests (Maven/Java)
+* **Batch**: install dependencies and run tests (Python)
+
+Status badge (example, update the filename if needed):
+
+!\[CI]\([https://github.co](https://github.co)
