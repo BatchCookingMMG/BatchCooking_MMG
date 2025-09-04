@@ -1,25 +1,31 @@
+// src/test/features/filters/components/RecipesNumberInput.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, test, expect, vi } from 'vitest';
-import RecipesNumberInput from "@/features/filters/components/RecipesNumberInput";
-
+import RecipesNumberInput from '@/features/filters/components/RecipesNumberInput';
 
 describe('RecipesNumberInput', () => {
   test('affiche le label et la valeur', () => {
     render(<RecipesNumberInput value={5} onChange={() => {}} />);
-    expect(screen.getByLabelText(/nombre de repas/i)).toBeInTheDocument();
-    expect(screen.getByRole('spinbutton')).toHaveValue(5);
+
+    const input = screen.getByLabelText(/nombre de repas/i) as HTMLInputElement;
+
+    expect(input).toBeInTheDocument();
+    // type="text" => la valeur est une string
+    expect(input).toHaveValue('5');
   });
 
-  test('appelle onChange avec la nouvelle valeur', () => {
+  test('appelle onChange avec la nouvelle valeur au blur', () => {
     const handleChange = vi.fn();
     render(<RecipesNumberInput value={5} onChange={handleChange} />);
 
-    const input = screen.getByRole('spinbutton') as HTMLInputElement;
+    const input = screen.getByLabelText(/nombre de repas/i) as HTMLInputElement;
 
-    // ✅ Simule un changement : tape directement "8"
+    // Tape "8" (ton composant ne déclenche pas onChange parent ici)
     fireEvent.change(input, { target: { value: '8' } });
 
-    // Vérifie qu'on a bien reçu le bon nombre
+    // Déclenche la normalisation qui appelle onChange(clamped)
+    fireEvent.blur(input);
+
     expect(handleChange).toHaveBeenCalledWith(8);
   });
 });
