@@ -8,85 +8,70 @@ type UseLoginFormProps = {
 
 // Fonction sécurisée pour traduire les erreurs en messages utilisateurs
 const getErrorMessage = (error: any): string => {
-  if (typeof error === 'string' && !error.includes('HTTP')) {
-    return error;
-  }
+  if (typeof error === "string" && !error.includes("HTTP")) return error;
 
-  if (error?.response?.status || error?.status) {
-    const status = error.response?.status || error.status;
-
+  const status = error?.response?.status || error?.status;
+  if (status) {
     switch (status) {
       case 400:
-        return 'Informations de connexion invalides';
+        return "Informations de connexion invalides";
       case 401:
       case 403:
-        return 'Email ou mot de passe incorrect';
+        return "Email ou mot de passe incorrect";
       case 404:
-        return 'Service de connexion indisponible';
+        return "Service de connexion indisponible";
       case 429:
-        return 'Trop de tentatives. Réessayez dans quelques minutes';
+        return "Trop de tentatives. Réessayez dans quelques minutes";
       case 422:
-        return 'Format des données incorrect';
+        return "Format des données incorrect";
       case 500:
       case 502:
       case 503:
       case 504:
-        return 'Service temporairement indisponible. Réessayez plus tard';
+        return "Service temporairement indisponible. Réessayez plus tard";
       default:
-        return 'Une erreur est survenue lors de la connexion';
+        return "Une erreur est survenue lors de la connexion";
     }
   }
 
   if (error?.message) {
-    if (error.message.includes('Network Error') || error.message.includes('fetch')) {
-      return 'Problème de connexion internet';
+    if (error.message.includes("Network Error") || error.message.includes("fetch")) {
+      return "Problème de connexion internet";
     }
-    if (error.message.includes('timeout')) {
-      return 'Délai de connexion dépassé. Réessayez';
+    if (error.message.includes("timeout")) {
+      return "Délai de connexion dépassé. Réessayez";
     }
   }
 
-  return 'Une erreur est survenue. Réessayez';
+  return "Une erreur est survenue. Réessayez";
 };
 
 // Validation côté client du formulaire login
 const validateLoginForm = (email: string, password: string): string[] => {
   const errors: string[] = [];
+  if (!email.trim()) errors.push("Email requis");
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push("Format d'email invalide");
 
-  if (!email.trim()) {
-    errors.push('Email requis');
-  } else {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      errors.push('Format d\'email invalide');
-    }
-  }
-
-  if (!password.trim()) {
-    errors.push('Mot de passe requis');
-  } else if (password.length < 6) {
-    errors.push('Mot de passe trop court (minimum 6 caractères)');
-  }
+  if (!password.trim()) errors.push("Mot de passe requis");
+  else if (password.length < 6) errors.push("Mot de passe trop court (minimum 6 caractères)");
 
   return errors;
 };
 
 export function useLoginForm({ onSuccess }: UseLoginFormProps = {}) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { login } = useAuth();
   const location = useLocation();
-
   const from = (location.state as { from?: string })?.from || "/";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Validation côté client
     const validationErrors = validateLoginForm(email, password);
     if (validationErrors.length > 0) {
       setError(validationErrors[0]);
@@ -97,6 +82,7 @@ export function useLoginForm({ onSuccess }: UseLoginFormProps = {}) {
     setError(null);
 
     try {
+      // await login garantit que user est mis à jour avant navigate
       const success = await login({
         email: email.trim().toLowerCase(),
         password,
@@ -105,14 +91,12 @@ export function useLoginForm({ onSuccess }: UseLoginFormProps = {}) {
       if (success) {
         setError(null);
         onSuccess?.();
-        navigate(from, { replace: true });
+        navigate(from, { replace: true }); // navigation après update du user
       } else {
-        setError('Email ou mot de passe incorrect');
+        setError("Email ou mot de passe incorrect");
       }
     } catch (err: any) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Erreur de connexion détaillée:', err);
-      }
+      console.error("Erreur de connexion détaillée:", err);
       setError(getErrorMessage(err));
     } finally {
       setLoading(false);

@@ -1,5 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-import { loginUser } from "../api/authApi";
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import { getCurrentUser, loginUser } from "../api/authApi";
 import { User, LoginRequest } from "../types/userTypes";
 
 type AuthContextType = {
@@ -8,6 +14,7 @@ type AuthContextType = {
   logout: () => void;
   loading: boolean;
   error: string | null;
+  isInitialized: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,6 +35,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
+
+  // Initialisation du user depuis le token au montage
+  useEffect(() => {
+    const initializeAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          // Récupère les infos de l'utilisateur depuis l'API
+          const currentUser = await getCurrentUser(token);
+          setUser(currentUser);
+        } catch {
+          // Token invalide ou expiré
+          localStorage.removeItem("token");
+          setUser(null);
+        }
+      }
+      setIsInitialized(true);
+    };
+    initializeAuth();
+  }, []);
 
   const login = async (credentials: LoginRequest): Promise<boolean> => {
     setLoading(true);
@@ -52,7 +80,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, error }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, loading, error, isInitialized }}
+    >
       {children}
     </AuthContext.Provider>
   );

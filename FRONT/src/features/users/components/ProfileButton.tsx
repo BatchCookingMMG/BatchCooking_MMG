@@ -3,9 +3,11 @@ import { useAuth } from "@/features/users";
 import { CircleUserRound } from "lucide-react";
 
 export default function ProfileButton() {
-  const { user, logout } = useAuth();
+  const { user, logout, isInitialized } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  if (!isInitialized) return null;
 
   const handleProfileClick = () => {
     if (user) {
