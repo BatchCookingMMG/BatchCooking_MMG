@@ -1,9 +1,8 @@
 // RecipeCard.test.tsx
-
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
-import RecipeCard from './RecipeCard';
-import { describe, test, expect } from 'vitest';
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import { describe, test, expect } from "vitest";
+import RecipeCard from "../../../../features/recipes/components/RecipeCard";
 
 describe('RecipeCard', () => {
     const mockRecipe = {

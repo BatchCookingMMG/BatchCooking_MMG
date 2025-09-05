@@ -32,4 +32,28 @@ build/
 ### VS Code ###
 .vscode/
 
+### Import Cloudinary ###
+BACK/assets/*
+!BACK/assets/assets.json
+
+###  Environnements files (secrets) ###
+.env
+.env.*
+**/.env
+**/.env.*
+FRONT/.env*
+BATCH/.env*
+BACK/.env*
+
+# Node (FRONT / BATCH)
+**/node_modules/
+FRONT/dist/
+FRONT/build/
+BATCH/dist/
+BATCH/build/
+
+# Logs
+*.log
+
+
 application-local.properties

@@ -47,6 +47,8 @@ class RecipeControllerTest {
         Recipe mockRecipe = new Recipe();
         mockRecipe.setId(1);
         mockRecipe.setTitle("Tarte aux pommes");
+        mockRecipe.setImageUrl("https://example.com/img.jpg");
+
 
         when(recipeService.getRecipeById(1)).thenReturn(Optional.of(mockRecipe));
 
@@ -55,7 +57,8 @@ class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Tarte aux pommes"));
+                .andExpect(jsonPath("$.title").value("Tarte aux pommes"))
+                 .andExpect(jsonPath("$.imageUrl").value("https://example.com/img.jpg"));
     }
 
     @Test
@@ -71,8 +74,8 @@ class RecipeControllerTest {
     @Test
     public void testGetRandomRecipesWhenRecipesFoundResponse200() throws Exception {
         // given
-        RecipeSummaryDTO dto1 = new RecipeSummaryDTO(1, "vegetarien", "hachis parmentier végétarien", "30 min", "Facile");
-        RecipeSummaryDTO dto2 = new RecipeSummaryDTO(2, "vegetarien", "ratatouille", "25 min", "Facile");
+        RecipeSummaryDTO dto1 = new RecipeSummaryDTO(1, "vegetarien", "hachis parmentier végétarien", "30 min", "Facile", "https://example.com/1.jpg");
+        RecipeSummaryDTO dto2 = new RecipeSummaryDTO(2, "vegetarien", "ratatouille", "25 min", "Facile", "https://example.com/2.jpg");
 
 
         List<RecipeSummaryDTO> dtos = Arrays.asList(dto1, dto2);
@@ -87,8 +90,10 @@ class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("hachis parmentier végétarien"))
                 .andExpect(jsonPath("$[0].tag").value("vegetarien"))
+                .andExpect(jsonPath("$[0].imageUrl").value("https://example.com/1.jpg"))
                 .andExpect(jsonPath("$[1].title").value("ratatouille"))
-                .andExpect(jsonPath("$[1].tag").value("vegetarien"));
+                .andExpect(jsonPath("$[1].tag").value("vegetarien"))
+                .andExpect(jsonPath("$[1].imageUrl").value("https://example.com/2.jpg"));
     }
 
     @Test

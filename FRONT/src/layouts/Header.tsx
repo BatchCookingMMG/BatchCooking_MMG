@@ -15,16 +15,10 @@ export default function Header() {
 
   return (
     <header className="flex items-center justify-between px-4 bg-white shadow-md">
-      {/* Logo à gauche */}
+      {/* Logo cliquable */}
       <Link to="/">
         <img src="/images/logo.png" alt="Logo" className="h-25 w-auto" />
       </Link>
-
-      {/* TODO : est-ce que les filtres ont leur place dans le header ? */}
-      <nav className="hidden md:flex gap-4">
-        <button className="text-sm font-medium">Végétarien</button>
-        <button className="text-sm font-medium">Sans Porc</button>
-      </nav>
       <ProfileButton />
     </header>
   );
