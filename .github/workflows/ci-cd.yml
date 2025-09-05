@@ -27,8 +27,8 @@ jobs:
         run: npm ci
       - name: build
         run: npm run build
-      #- name: Run tests
-      #  run: npm test
+      - name: Run tests
+        run: npm test
 
       #- name: Build & push Docker image
       #  run: |
@@ -51,8 +51,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: "21"
+          distribution: "temurin"
 
       - run: mvn clean install
 
