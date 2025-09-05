@@ -43,15 +43,20 @@ export default function FilteredRecipesPage() {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4">Résultats de vos critères : </h2>
-        {/* Message si on a moins de recettes que demandées */}
-        {recipes.length < recipesNumber && (
+      {/* 🔝 Titre + bouton alignés */}
+       <div className="flex items-center gap-4 mb-4">
+        <h2 className="text-xl font-bold">Résultats de vos critères :</h2>
+        <GenerateBatchButton recipes={recipes} />
+      </div>
+
+      {/* Message si on a moins de recettes que demandées */}
+      {recipes.length < recipesNumber && (
         <p className="text-orange-600 mb-4">
           Seulement {recipes.length} recettes trouvées sur {recipesNumber} demandées avec ces filtres.
         </p>
       )}
       <RecipeListCard recipes={recipes} />
-      <GenerateBatchButton recipes={recipes} />
+      
     </div>
   );
 }

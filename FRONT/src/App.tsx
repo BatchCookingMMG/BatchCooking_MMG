@@ -29,13 +29,12 @@ function App() {
               {/* Détail recette */}
               <Route path="recipe/:id" element={<RecipeDetailPage />} />
               <Route path="filtered-recipes" element={<FilteredRecipesPage />} />
+              <Route path="batch" element={<BatchPage />} />
                <Route path="mentions-legales" element={<MentionsLegales />} /> 
                <Route path="contact" element={<Contact />} />
-
+              
+              
             </Route>
-
-            {/* Route pour le batch */}
-            <Route path="/batch" element={<BatchPage />} />
           </Routes>
         </div>
       </ErrorBoundary>
