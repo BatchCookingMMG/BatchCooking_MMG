@@ -4,6 +4,8 @@ import { useSearchParams } from "react-router-dom";
 import { fetchFilteredRecipes } from "@/features/recipes/api/recipeApi";
 import RecipeListCard from "@/features/recipes/components/RecipeListCard";
 import { RecipeListCard as RecipeType } from "@/features/recipes/types/recipeTypes";
+import GenerateBatchButton from "@/features/batch/components/GenerateBatchButton";
+
 
 export default function FilteredRecipesPage() {
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
@@ -49,6 +51,7 @@ export default function FilteredRecipesPage() {
         </p>
       )}
       <RecipeListCard recipes={recipes} />
+      <GenerateBatchButton recipes={recipes} />
     </div>
   );
 }

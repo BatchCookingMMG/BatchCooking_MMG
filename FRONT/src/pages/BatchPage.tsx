@@ -7,13 +7,18 @@ import RecipeCard from '@/features/recipes/components/RecipeCard';
 import { fetchRecipeById } from '@/features/recipes/api/recipeApi';
 import { Recipe } from '@/features/recipes/types/recipeTypes';
 import ShoppingList from '@/features/batch/components/ShoppingList';
+import { useLocation } from 'react-router-dom';
+
 
 const BatchPage = () => {
     const [batchData, setBatchData] = useState<BatchResponseDTO | null>(null);
     const [selectedRecipes, setSelectedRecipes] = useState<Recipe[]>([]);
     const [error, setError] = useState<string | null>(null);
 
-    const recipeIds = [13, 14, 24, 30, 51]; // exemple
+    const location = useLocation();
+    const recipeIds: number[] = location.state?.recipeIds || [];
+
+
 
     useEffect(() => {
         const fetchData = async () => {
