@@ -1,6 +1,5 @@
 package com.example.batchCooking.controller;
 
-import com.example.batchCooking.configuration.SpringSecurityConfig;
 import com.example.batchCooking.dto.RecipeRequestDTO;
 import com.example.batchCooking.exception.BatchGenerationException;
 import com.example.batchCooking.service.BatchService;
@@ -14,6 +13,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BatchController.class)
-@Import(SpringSecurityConfig.class)
+@AutoConfigureMockMvc(addFilters = false)
 class BatchControllerTest {
 
     @Autowired
