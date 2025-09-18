@@ -7,7 +7,7 @@ import { RecipeSummary } from "@/features/recipes";
 import RecipeIngredients from "@/features/recipes/components/RecipeIngredients";
 import RecipeSteps from "@/features/recipes/components/RecipeSteps";
 
-function RecipeDetailPage() {
+function RecipeDetailsPage() {
   const { id } = useParams();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,18 +32,32 @@ function RecipeDetailPage() {
   if (error || !recipe) return <p>{error || "Recette introuvable."}</p>;
 
   return (
-    <div className="flex flex-col items-center px-4 py-6 gap-6 max-w-md mx-auto">
-      <h1 className="text-3xl font-bold text-left">{recipe.title}</h1>
-      <img
-        src={recipe.image || "/images/default-recipe.jpg"}
-        alt="Image de la recette"
-        className="w-full h-auto rounded-md object-cover"
-      />
-      <RecipeSummary recipe={recipe} />
-      <RecipeIngredients ingredients={recipe.ingredients} />
-      <RecipeSteps steps={recipe.steps} />
+    <div className="px-4 py-6 max-w-6xl mx-auto space-y-10">
+      <h1 className="text-3xl font-bold">{recipe.title}</h1>
+
+      {/* Image + Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-6">
+        <img
+          src={recipe.image || "/images/default-recipe.jpg"}
+          alt="Image de la recette"
+          className="w-full aspect-[3/2] rounded-3xl object-cover shadow-md"
+        />
+        <div className="space-y-4">
+          <RecipeSummary recipe={recipe} />
+        </div>
+      </div>
+
+      {/* Ingredients + Steps */}
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-6">
+        <div className="space-y-4">
+          <RecipeIngredients ingredients={recipe.ingredients} />
+        </div>
+        <div className="space-y-4">
+          <RecipeSteps steps={recipe.steps} />
+        </div>
+      </div>
     </div>
   );
 }
 
-export default RecipeDetailPage;
+export default RecipeDetailsPage;
