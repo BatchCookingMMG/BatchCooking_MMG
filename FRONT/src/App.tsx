@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
-import { RecipeDetailPage, FilteredRecipesPage } from "@/pages";
+import { RecipeDetailsPage, FilteredRecipesPage } from "@/pages";
 import { LoginForm, RegisterForm } from "@/features/users";
 import ErrorBoundary from "./core/logging/errorBoundary";
 import { logInfo } from "./core/logging/logger";
@@ -27,16 +27,18 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
               {/* Détail recette */}
-              <Route path="recipe/:id" element={<RecipeDetailPage />} />
-              <Route path="filtered-recipes" element={<FilteredRecipesPage />} />
-              <Route path="batch" element={<BatchPage />} />
-               <Route path="mentions-legales" element={<MentionsLegales />} /> 
-               <Route path="contact" element={<Contact />} />
+              <Route path="recipe/:id" element={<RecipeDetailsPage />} />
               <Route
                 path="filtered-recipes"
                 element={<FilteredRecipesPage />}
               />
-           
+              <Route path="batch" element={<BatchPage />} />
+              <Route path="mentions-legales" element={<MentionsLegales />} />
+              <Route path="contact" element={<Contact />} />
+              <Route
+                path="filtered-recipes"
+                element={<FilteredRecipesPage />}
+              />
             </Route>
           </Routes>
         </div>
