@@ -8,4 +8,13 @@ Thumbs.db
 
 # Environment files
 .env
-.env.* 
+.env.*
+
+# Maven build output
+**/target/
+
+# Logs
+*.log
+
+# Playwright videos
+e2e-tests/videos/
