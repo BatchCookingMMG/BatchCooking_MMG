@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth, RegisterRequest } from "@/features/users";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type UseRegisterFormProps = {
   onSuccess?: () => void;
@@ -14,6 +14,9 @@ export function useRegisterForm({ onSuccess }: UseRegisterFormProps = {}) {
 
   const { register, loading, error } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = (location.state as { from?: string })?.from || "/";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +35,8 @@ export function useRegisterForm({ onSuccess }: UseRegisterFormProps = {}) {
     const response = await register(registerData);
 
     if (response) {
-      navigate("/");
       if (onSuccess) onSuccess();
+      navigate(from, { replace: true }); 
     }
   };
 

@@ -1,9 +1,13 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useLoginForm } from "@/features/users";
 
 type LoginFormProps = {
   onSuccess?: () => void;
+};
+
+type LocationState = {
+  from?: string;
 };
 
 const LoginForm = ({ onSuccess }: LoginFormProps) => {
@@ -16,6 +20,10 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
     handlePasswordChange,
     handleSubmit,
   } = useLoginForm({ onSuccess });
+
+  const location = useLocation();
+
+  const from = location.state?.from || location.pathname;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -97,6 +105,7 @@ const LoginForm = ({ onSuccess }: LoginFormProps) => {
             </p>
             <Link
               to="/register"
+              state={{ from }}
               className="text-[#D3803C] hover:text-[#B36E2F] text-sm font-medium hover:underline transition-colors"
             >
               S'inscrire
