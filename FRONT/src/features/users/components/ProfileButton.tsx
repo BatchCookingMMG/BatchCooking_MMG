@@ -24,6 +24,7 @@ export default function ProfileButton() {
 
   return (
     <button
+      data-testid="profile-button"
       onClick={handleProfileClick}
       className="flex flex-col items-center hover:opacity-80 transition-opacity"
     >
