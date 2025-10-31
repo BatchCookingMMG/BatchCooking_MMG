@@ -57,3 +57,4 @@ BATCH/build/
 
 
 application-local.properties
+package-lock.json
