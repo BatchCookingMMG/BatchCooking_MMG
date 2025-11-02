@@ -1,7 +1,7 @@
 package com.example.batchCooking.controller;
 
 import com.example.batchCooking.dto.RecipeSummaryDTO;
-import com.example.batchCooking.exception.InvalidRecipeFilterException;
+import com.example.batchCooking.exception.GlobalExceptionHandler;
 import com.example.batchCooking.model.Recipe;
 import com.example.batchCooking.service.RecipeService;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(RecipeController.class)
+@Import(GlobalExceptionHandler.class)
 @AutoConfigureMockMvc(addFilters = false)
 class RecipeControllerTest {
 

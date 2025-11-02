@@ -46,5 +46,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBatchGenerationException(BatchGenerationException ex) {
         return ResponseEntity.status(500).body("Erreur interne lors de la génération du batch.");
     }
+
+    @ExceptionHandler(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<String> handleTypeMismatch(org.springframework.web.method.annotation.MethodArgumentTypeMismatchException ex) {
+        String param = ex.getName();
+        Object value = ex.getValue();
+        String body = String.format("Filtre invalide : Paramètre '%s' invalide : %s", param, value);
+        logger.warn("Paramètre invalide - {}={}", param, value);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
 }
 

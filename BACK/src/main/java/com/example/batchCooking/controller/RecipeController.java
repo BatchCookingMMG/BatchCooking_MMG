@@ -43,16 +43,16 @@ public class RecipeController {
               @RequestParam @Min(2) @Max(14) Integer recipesNumber,
               @RequestParam(defaultValue = "false") boolean vegetarien,
               @RequestParam(defaultValue = "false") boolean sansPorc,
-              @RequestParam(required = false) String difficulty,
-              @RequestParam(required = false) String cost) {
+              @RequestParam(required = false) DifficultyEnum  difficulty,
+              @RequestParam(required = false) CostEnum cost) {
 
           logger.info("GET /api/recipes/random appelé avec recipesNumber={}, vegetarien={}, sansPorc={}, difficulty={}, cost={}",
                   recipesNumber, vegetarien, sansPorc, difficulty, cost);
 
-              DifficultyEnum difficultyEnum = difficulty != null ? DifficultyEnum.fromLabel(difficulty) : null;
-              CostEnum costEnum = cost != null ? CostEnum.fromLabel(cost) : null;
+//              DifficultyEnum difficultyEnum = difficulty != null ? DifficultyEnum.fromLabel(difficulty) : null;
+//              CostEnum costEnum = cost != null ? CostEnum.fromLabel(cost) : null;
 
-              List<RecipeSummaryDTO> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficultyEnum, costEnum);
+              List<RecipeSummaryDTO> recipes = recipeService.getRandomNRecipes(recipesNumber, vegetarien, sansPorc, difficulty, cost);
               if (recipes.isEmpty()) {
                   logger.info("Aucune recette trouvée pour les critères fournis");
                   return ResponseEntity.noContent().build();
