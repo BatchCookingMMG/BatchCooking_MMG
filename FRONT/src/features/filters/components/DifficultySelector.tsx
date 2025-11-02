@@ -13,7 +13,7 @@ export default function DifficultySelector({ value, onChange }: Props) {
     >
       <option value="TRES_FACILE">Très facile</option>
       <option value="FACILE">Facile</option>
-      <option value="MOYENNE">Moyen</option>
+      <option value="MOYENNE">Moyenne</option>
     </select>
   );
 }
