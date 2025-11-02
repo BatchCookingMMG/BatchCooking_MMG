@@ -73,7 +73,7 @@ class BatchServiceTest {
 
         // when: simulate exception
         when(restTemplate.postForEntity(eq(url), eq(request), eq(String.class)))
-                .thenThrow(new RuntimeException("Service unreachable"));
+                .thenThrow(new RuntimeException("Service non disponible"));
 
         // then: assert exception is thrown
         Assertions.assertThrows(RuntimeException.class, () -> {

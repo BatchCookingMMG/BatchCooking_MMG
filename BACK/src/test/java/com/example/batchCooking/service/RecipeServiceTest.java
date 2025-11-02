@@ -45,8 +45,8 @@ public class RecipeServiceTest {
 
         // then
         assertEquals(1, result.size());
-        assertEquals("hachis parmentier", result.get(0).getTitle());
-        assertEquals("https://example.com/curry.jpg", result.get(0).getImageUrl());
+        assertEquals("hachis parmentier", result.getFirst().getTitle());
+        assertEquals("https://example.com/curry.jpg", result.getFirst().getImageUrl());
         verify(recipeRepositoryCustom, times(1))
                 .findFilteredRandomRecipes(3, true, true, DifficultyEnum.FACILE, CostEnum.MOYEN);
     }
@@ -55,7 +55,7 @@ public class RecipeServiceTest {
     void testGetRandomNRecipes_withNoFilters() {
         // given
         RecipeSummaryDTO dto = new RecipeSummaryDTO(
-                456, "dessert", "tarte aux pommes", "45 min", "Moyen"
+                456, "dessert", "tarte aux pommes", "45 min", "Moyenne"
         );
 
         when(recipeRepositoryCustom.findFilteredRandomRecipes(2, false, false, null, null))
