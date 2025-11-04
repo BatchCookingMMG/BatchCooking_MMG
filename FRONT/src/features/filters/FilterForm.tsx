@@ -52,6 +52,7 @@ export default function FilterForm() {
       <button
         type="submit"
         className="bg-orange-500 text-white font-bold px-4 py-2 rounded-md hover:bg-orange-600 transition-all"
+        aria-label="Générer les recettes"
       >
         Générer les recettes
       </button>

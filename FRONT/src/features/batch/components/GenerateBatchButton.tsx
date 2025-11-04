@@ -25,6 +25,7 @@ const GenerateBatchButton = ({ recipes }: Props) => {
                  bg-[#B3B38E] text-white text-sm font-medium shadow-sm
                  hover:shadow-md hover:brightness-105 
                  transform hover:-translate-y-0.5 transition-all duration-200"
+       aria-label="Générer mon Batch Cooking"
     >
       Générer mon Batch Cooking
       <UtensilsCrossed className="w-4 h-4 text-white transition-transform duration-200 group-hover:rotate-12" />
