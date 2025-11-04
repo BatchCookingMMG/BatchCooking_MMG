@@ -1,5 +1,5 @@
 # Utiliser l'image OpenJDK pour exécuter une application Java
-FROM openjdk:21-jdk-slim
+FROM eclipse-temurin:21-jdk
 
 # Auteur du conteneur
 LABEL authors="gverc"
