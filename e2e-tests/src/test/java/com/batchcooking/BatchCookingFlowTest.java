@@ -46,7 +46,7 @@ public class BatchCookingFlowTest {
         Page page = context.newPage();
 
         // 1. Aller sur la page home
-        page.navigate("http://localhost:5173/");
+        page.navigate("http://localhost:5175/");
         page.waitForLoadState();
 
         // 2. Choisir 5 recettes

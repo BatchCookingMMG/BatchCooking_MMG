@@ -45,7 +45,7 @@ public class AuthFlowTest {
         Page page = context.newPage();
 
         // 1. Aller sur /filtered-recipes
-        page.navigate("http://localhost:5173/filtered-recipes");
+        page.navigate("http://localhost:5175/filtered-recipes");
         page.waitForLoadState();
 
         // 2. Cliquer sur le logo login

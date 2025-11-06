@@ -35,7 +35,7 @@ BatchCooking_MMG/
 docker compose up --build
 ```
 
-- Front: [http://localhost:5173](http://localhost:5173)
+- Front: [http://localhost:5175](http://localhost:5175)
 - API: [http://localhost:8080](http://localhost:8080)
 
 ## Manual Start

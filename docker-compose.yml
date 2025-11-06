@@ -1,12 +1,11 @@
 services:
-
   postgres:
     image: postgres:16
     restart: unless-stopped
     env_file:
       - ./POSTGRES/.env
     ports:
-      - "5433:5432"
+      - "5460:5432"
     volumes:
       - ./POSTGRES/data:/var/lib/postgresql/data
     networks:
@@ -16,7 +15,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-      
+
   back:
     build:
       context: ./BACK
@@ -34,19 +33,19 @@ services:
     build:
       context: ./BATCH
     ports:
-      - "5001:5001"
+      - "5002:5001"
     env_file:
       - ./BATCH/.env
     networks:
       - batchcooking_network
     depends_on:
       - back
-      
+
   front:
     build:
       context: ./FRONT
     ports:
-      - "5173:80"
+      - "5175:80"
     env_file:
       - ./FRONT/.env.production
     networks:
