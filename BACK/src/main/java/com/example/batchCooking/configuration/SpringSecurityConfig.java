@@ -76,9 +76,10 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, CorsFilter corsFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
+                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("OPTIONS", "/**").permitAll()
