@@ -7,22 +7,20 @@ WORKDIR /app
 # Copier les fichiers package.json et package-lock.json (pour installer les dépendances)
 COPY ./package*.json ./
 
-# Installer les dépendances
-RUN npm run build -- --mode production
+# Installer toutes les dépendances (y compris devDependencies)
+RUN npm install --include=dev
 
 # Copier tout le code source
 COPY ./ ./
 
-# Construire l'application React
-RUN npm run build
+# Construire l'application React en mode production (pour lire .env.production)
+RUN npm run build -- --mode production
 
 # Utiliser Nginx pour servir l’application
 FROM nginx:alpine
-COPY --from=0 /app/dist /usr/share/nginx/html
+
+COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Exposer le port 80
 EXPOSE 80
-
-# Lancer Nginx
 CMD ["nginx", "-g", "daemon off;"]
