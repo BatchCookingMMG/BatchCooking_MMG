@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class SpringSecurityConfig {
@@ -55,16 +56,33 @@ public class SpringSecurityConfig {
         return new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService);
     }
 
-    // ✅ Bean CORS global — unique et propre
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfig = new CorsConfiguration();
+
+        // ✅ Ajoutez TOUS les ports possibles
         corsConfig.setAllowedOrigins(Arrays.asList(
                 "http://localhost:5175",
-                "http://188.165.238.74:5175"
+                "http://188.165.238.74:5175",
+                "http://188.165.238.74",  // Au cas où pas de port
+                "http://localhost:3000"   // Au cas où
         ));
-        corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        corsConfig.setAllowedHeaders(Arrays.asList("*"));
+
+        // ✅ Tous les headers nécessaires
+        corsConfig.setAllowedMethods(Arrays.asList(
+                "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"
+        ));
+
+        // ✅ Permettre tous les headers
+        corsConfig.setAllowedHeaders(List.of("*"));
+
+        // ✅ Exposer les headers de réponse
+        corsConfig.setExposedHeaders(Arrays.asList(
+                "Authorization",
+                "Content-Type",
+                "X-Total-Count"
+        ));
+
         corsConfig.setAllowCredentials(true);
         corsConfig.setMaxAge(3600L);
 
@@ -76,13 +94,16 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // ✅ CORS doit être en premier
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/favicon.ico").permitAll()
+                        // ✅ OPTIONS en premier pour le preflight CORS
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                        .requestMatchers("/api/recipes/**").permitAll()  // ✅ Explicite
                         .requestMatchers("/api/auth/me").authenticated()
                         .anyRequest().permitAll()
                 )
