@@ -16,6 +16,8 @@ BatchCooking_MMG/
 ├─ BACK/   # API and business logic
 ├─ FRONT/  # Web app
 ├─ BATCH/  # Batch scripts
+├─ E2E/
+├─ POSTGRES/ 
 ├─ docker-compose.yml
 └─ README.md
 ```
@@ -36,7 +38,7 @@ docker compose up --build
 ```
 
 - Front: [http://localhost:5173](http://localhost:5173)
-- API: [http://localhost:8080](http://localhost:8080)
+- API: [http://localhost:8080](http://localhost:8083)
 
 ## Manual Start
 
@@ -70,20 +72,20 @@ python scripts/<your_script>.py
 - **Front (`FRONT/.env`)**
 
   ```
-  VITE_API_URL=http://localhost:8080
+  VITE_API_URL=http://localhost:8083
   ```
 
 - **Back (`BACK/.env` or app config)**
 
   ```
-  SERVER_PORT=8080
+  SERVER_PORT=8083
   SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/batchcooking
   ```
 
 - **Batch (`BATCH/.env`)**
 
   ```
-  API_BASE_URL=http://localhost:8080
+  API_BASE_URL=http://localhost:8083
   ```
 
 ## Scripts
@@ -103,3 +105,4 @@ Current pipeline runs:
 - **Batch**: install dependencies and run tests (Python)
 
 Status badge: [![CI/CD Pipeline](https://github.com/BatchCookingMMG/BatchCooking_MMG/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/BatchCookingMMG/BatchCooking_MMG/actions/workflows/ci-cd.yml)
+
